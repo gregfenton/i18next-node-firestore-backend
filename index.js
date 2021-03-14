@@ -131,38 +131,6 @@ class Backend {
       console.error(x);
       return;
     }
-
-    // this code is from i18next-node-mongodb-backend
-    let res = {};
-    this.getClient()
-      .then(async (client) => {
-        const col = await this.getCollection(client);
-
-        const docs = await col
-          .find({
-            [this.opts.languageFieldName]: { $in: langs },
-            [this.opts.namespaceFieldName]: { $in: nss },
-          })
-          .toArray();
-
-        const parsed = {};
-
-        for (let i = 0; i < docs.length; i += 1) {
-          const doc = docs[i];
-          const lang = doc[this.opts.languageFieldName];
-          const ns = doc[this.opts.namespaceFieldName];
-          const data = doc[this.opts.dataFieldName];
-
-          if (!parsed[lang]) {
-            parsed[lang] = {};
-          }
-
-          parsed[lang][ns] = data;
-        }
-
-        cb(null, parsed);
-      })
-      .catch(this.opts.readMultiOnError);
   }
 
   create(langs, ns, key, fallbackVal, cb) {
@@ -171,37 +139,6 @@ class Backend {
       console.error(x);
       return;
     }
-    
-    // this code is from i18next-node-mongodb-backend
-    this.getClient()
-      .then(async (client) => {
-        const col = await this.getCollection(client);
-
-        // Make `updateOne` process run concurrently
-        await Promise.all(
-          (typeof langs === 'string' ? [langs] : langs).map((lang) =>
-            col.updateOne(
-              {
-                [this.opts.languageFieldName]: lang,
-                [this.opts.namespaceFieldName]: ns,
-              },
-              {
-                $set: {
-                  [`${this.opts.dataFieldName}.${key}`]: fallbackVal,
-                },
-              },
-              {
-                upsert: true,
-              }
-            )
-          )
-        );
-
-        // If `this.client` exists (equal to if use custom MongoClient), don't close connection
-        if (!this.client && client.isConnected()) await client.close();
-        if (cb) cb();
-      })
-      .catch(this.opts.createOnError);
   }
 }
 
