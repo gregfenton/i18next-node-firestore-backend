@@ -1,0 +1,55 @@
+{
+  "name": "i18next-node-firestore-backend",
+  "version": "0.2.0",
+  "license": "MIT",
+  "description": "Use i18next with Google Firestore as backend",
+  "main": "./index.js",
+  "homepage": "https://github.com/gregfenton/i18next-node-firestore-backend",
+  "keywords": [
+    "i18next",
+    "firestore",
+    "google-firestore",
+    "firebase-firestore",
+    "google-firebase-firestore",
+    "i18next-backend",
+    "i18next-firestore-backend"
+  ],
+  "author": {
+    "name": "Greg Fenton",
+    "url": "https://github.com/gregfenton"
+  },
+  "bugs": {
+    "url": "https://github.com/gregfenton/i18next-node-firestore-backend/issues"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "t2": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test": "node -r esm node_modules/.bin/jest && codecov",
+    "test:dev": "jest --verbose false"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gregfenton/i18next-node-firestore-backend.git"
+  },
+  "devDependencies": {
+    "codecov": "^3.8.1",
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.8",
+    "eslint-plugin-prettier": "^3.3.1",
+    "esm": "^3.2.25",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.1"
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {}
+  },
+  "dependencies": {
+    "firebase": "^8.2.10"
+  }
+}
