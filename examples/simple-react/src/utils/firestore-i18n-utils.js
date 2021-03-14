@@ -1,4 +1,4 @@
-const translations = require('./translations');
+const translations = require('../translations');
 
 export const loadTranslationsToFirestore = async (
   db,
