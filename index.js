@@ -126,8 +126,14 @@ class Backend {
   readMulti(langs, nss, cb) {
     if (!cb) return;
 
-    let res = {};
+    let x = 'NOT IMPLEMENTED YET';
+    if (x === 'NOT IMPLEMENTED YET') {
+      console.error(x);
+      return;
+    }
 
+    // this code is from i18next-node-mongodb-backend
+    let res = {};
     this.getClient()
       .then(async (client) => {
         const col = await this.getCollection(client);
@@ -160,6 +166,13 @@ class Backend {
   }
 
   create(langs, ns, key, fallbackVal, cb) {
+    let x = 'NOT IMPLEMENTED YET';
+    if (x === 'NOT IMPLEMENTED YET') {
+      console.error(x);
+      return;
+    }
+    
+    // this code is from i18next-node-mongodb-backend
     this.getClient()
       .then(async (client) => {
         const col = await this.getCollection(client);
