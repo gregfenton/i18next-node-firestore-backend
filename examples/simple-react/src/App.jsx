@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import firebaseApp from './firebase-config.js';
+import firebaseApp from './utils/firebase-config';
 import AuthenticationScreen from './screens/AuthenticationScreen';
 import LoadLanguagesScreen from './screens/LoadLanguageScreen.jsx';
 import MainScreen from './screens/MainScreen.jsx';
@@ -17,7 +17,7 @@ const App = () => {
       />
     );
   } else if (!availableTranslations) {
-    // Second, initialize i18next via Firestore
+    // Second, ensure Firestore has the translation data loaded into it
     return (
       <LoadLanguagesScreen
         firebaseApp={firebaseApp}
@@ -25,7 +25,8 @@ const App = () => {
       />
     );
   } else {
-    // Third, authenticated & have a language...so show data!
+    // Third, authenticated & have a data...so initialize i18next
+    // & show the translations!
     return (
       <MainScreen
         authUser={authUser}

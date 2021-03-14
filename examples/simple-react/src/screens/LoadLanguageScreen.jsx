@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import loadTranslationsToFirestore from '../firestore-i18n-utils';
+import loadTranslationsToFirestore from '../utils/firestore-i18n-utils';
 
 const SelectLanguageScreen = (props) => {
   let firebaseApp = props.firebaseApp;
