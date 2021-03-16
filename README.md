@@ -4,7 +4,7 @@ A plugin for [i18next](https://www.i18next.com/) that supports fetching translat
 
 ## Getting Started
 
-See the example applications.  One is a CLI written in Javascript/NodeJS.  The other is a React application.  See their respective README files for details as to how to get them running.
+See the [example applications](examples).  One is a CLI written in Javascript/NodeJS.  The other is a React application.  See their respective README files for details as to how to get them running.
 
 ## Acknowledgements
 
