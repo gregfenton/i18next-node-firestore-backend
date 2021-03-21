@@ -25,8 +25,11 @@
     "node": ">=10"
   },
   "scripts": {
-    "test": "node -r esm node_modules/.bin/jest && codecov",
-    "test:dev": "jest --verbose false"
+    "test": "echo 'currently the testing is done via the examples apps'",
+    "release-bump:major": "standard-version --release-as major",
+    "release-bump:minor": "standard-version --release-as minor",
+    "release-bump:patch": "standard-version --release-as patch",
+    "release:tag-push": "git push --follow-tags origin main"
   },
   "repository": {
     "type": "git",
@@ -42,7 +45,8 @@
     "eslint-plugin-prettier": "^3.3.1",
     "esm": "^3.2.25",
     "jest": "^26.6.3",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "standard-version": "^9.1.1"
   },
   "jest": {
     "verbose": true,
