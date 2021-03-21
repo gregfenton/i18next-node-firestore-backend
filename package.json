@@ -25,7 +25,6 @@
     "node": ">=10"
   },
   "scripts": {
-    "t2": "node --experimental-vm-modules node_modules/.bin/jest",
     "test": "node -r esm node_modules/.bin/jest && codecov",
     "test:dev": "jest --verbose false"
   },
