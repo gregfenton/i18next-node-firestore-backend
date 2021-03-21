@@ -1,6 +1,6 @@
 {
   "name": "i18next-node-firestore-backend",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "MIT",
   "description": "Use i18next with Google Firestore as backend",
   "main": "./index.js",

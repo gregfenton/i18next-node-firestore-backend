@@ -1,6 +1,6 @@
 {
   "name": "i18n-firestore-simple-react",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "dependencies": {
     "firebase": "^8.2.10",
