@@ -8,7 +8,7 @@ This is a React-based example of using i18next & i18next-node-firestore-backend 
 
 ## Usage
 
-- Ensure values in `utils/firebase-config.js` are correct for your Firebase project.  You get those values from Firebase Console >> Project Overview >> Project Settings >> Your apps >> (Web App or click "Add app" >> Web app)
+- Ensure values in `src/utils/firebase-config.js` are correct for your Firebase project.  You get those values from Firebase Console >> Project Overview >> Project Settings >> Your apps >> (Web App or click "Add app" >> Web app)
 - Ensure values in `.env` are correct.  As is, they relate to the structure of the data in `translations.js` and what the React app is expecting to display those translations.
 - To get needed modules, run: `npm install`
 - From root directory, run: `npm start`
