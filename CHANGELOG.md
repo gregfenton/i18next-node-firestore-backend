@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
+* removed `firebase` as a dependency
 * minor update to README ([a587569](https://github.com/gregfenton/i18next-node-firestore-backend/commit/a58756945e0e63bb7f7b73b533283cd703b494c8))
 * typo in README ([4bce7d1](https://github.com/gregfenton/i18next-node-firestore-backend/commit/4bce7d1e69e6789089d925ac6aa3ccc56b303ec9))
 
