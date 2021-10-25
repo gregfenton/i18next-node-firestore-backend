@@ -52,9 +52,10 @@ const MainScreen = (props) => {
           interpolation: {
             escapeValue: false, // not needed for react
           },
+          load: 'currentOnly',  // don't auto-load other langs (en vs. en-US)
           ns: LIST_OF_NAMESPACES,
           react: {
-            useSuspense: false, //   <---- this will do the magic
+            useSuspense: false, // <---- this will do the magic
           },
         });
       setI18nInitialized(true);
