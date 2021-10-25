@@ -1,6 +1,6 @@
 {
   "name": "simple-cli",
-  "version": "0.2.3",
+  "version": "0.4.0",
   "license": "MIT",
   "description": "CLI-based NodeJS example of using i18next-node-firestore-backend",
   "homepage": "https://github.com/gregfenton/i18next-node-firestore-backend",
