@@ -18,7 +18,7 @@ This is a CLI-based example of using i18next & i18next-node-firestore-backend to
 The app's basic flow is:
 1. Loads configuration from `.env`
 1. Authenticates to Firebase and gets a connection to Firestore.
-1. Loads translation data (from `translations.js`) and uploads that data to Firestore.
+1. Loads translation data (from `translations.js`) and uploads that data to Firestore into a collection `I18N_FIRESTORE_COLLECTION_NAME` defined in `.env`
 1. Initializes i18next & the i18next-node-firestore-backend
 1. Iterates over the set of translation keys, fetching translation values via i18next, which in turn is fetching the values from Firestore.
 1. Exit.
