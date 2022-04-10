@@ -17,7 +17,7 @@ This is a React-based example of using i18next & i18next-node-firestore-backend 
 
 The app's basic flow is:
 1. Loads configuration from `.env`
-1. AUTHENTICATION SCREEN: displays a UI to authenticates to your Firebase project.
+1. AUTHENTICATION SCREEN: displays a UI to authenticate to your Firebase project.
 1. LOAD LANGUAGES SCREEN: checks if Firestore has translations already in it.  If so, jumps straight to next screen.  If not, presents a button to the user that when clicked loads translation data (from `tranlations.js`) to Firestore into a collection `I18N_FIRESTORE_COLLECTION_NAME` defined in `.env`
 1. MAIN SCREEN:
    - initializes i18next & the i18next-node-firestore-backend
