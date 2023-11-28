@@ -9,15 +9,15 @@ This is a CLI-based example of using i18next & i18next-node-firestore-backend to
 
 ## Using the example
 
-1. Edit the values in `.env`, especially the FIREBASE values.  You get the values for your Firebase Project from Firebase Console >> Project Overview >> Project Settings >> Your apps >> (Web App or click "Add app" >> Web app)
-2. To get needed modules, run: `npm install`
-3. To run the example app, from root directory run: `npm run example`
+1. Edit the values in `.env`, especially the FIREBASE values.  You will see the values of your Firebase Project from: `Firebase Console` >> `Project Overview` >> `Project Settings` >> `Your apps` >> (`Web App` or click `Add app` >> `Web app`)
+2. To install required modules, run: `npm install`
+3. To execute the example app, from the example's directory run: `npm run example`
 
 ## Outline of the example
 
 The app's basic flow is:
 1. Loads configuration from `.env`
-1. Authenticates to Firebase and gets a connection to Firestore.
+1. Authenticates to Firebase and gets a connection to Firestore
 1. Loads translation data (from `translations.js`) and uploads that data to Firestore into a collection `I18N_FIRESTORE_COLLECTION_NAME` defined in `.env`
 1. Initializes i18next & the i18next-node-firestore-backend
 1. Iterates over the set of translation keys, fetching translation values via i18next, which in turn is fetching the values from Firestore.

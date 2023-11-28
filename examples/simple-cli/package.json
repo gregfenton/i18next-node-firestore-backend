@@ -2,6 +2,7 @@
   "name": "simple-cli",
   "version": "0.4.0",
   "license": "MIT",
+  "type": "module",
   "description": "CLI-based NodeJS example of using i18next-node-firestore-backend",
   "homepage": "https://github.com/gregfenton/i18next-node-firestore-backend",
   "keywords": [
@@ -21,14 +22,13 @@
     "url": "https://github.com/gregfenton/i18next-node-firestore-backend/issues"
   },
   "dependencies": {
-    "dotenv": "^8.2.0",
-    "esm": "^3.2.25",
-    "firebase": "^8.2.10",
-    "i18next": "^19.3.4",
+    "dotenv": "^16.3.1",
+    "firebase": "^10.7.0",
+    "i18next": "^23.7.7",
     "i18next-express-middleware": "^1.9.1"
   },
   "scripts": {
-    "example": "node -r esm app.js",
-    "example-dbg": "node -r esm --inspect-brk app.js"
+    "example": "node app.js",
+    "example-dbg": "node --inspect-brk app.js"
   }
 }

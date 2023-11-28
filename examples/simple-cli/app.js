@@ -1,19 +1,30 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import {
+  addDoc,
+  collection,
+  connectFirestoreEmulator,
+  doc,
+  getDocs,
+  getFirestore,
+  query,
+  setDoc,
+  where,
+} from 'firebase/firestore';
+import * as FIRESTORE_MODULE from 'firebase/firestore';
 
 import dotenv from 'dotenv';
 
-const i18next = require('i18next');
-const Backend = require('../../index.js');
+import i18next from 'i18next';
+import Backend from '../../index.js';
 
-const translations = require('./translations');
+import translations from './translations.js';
 
-let FIRESTORE;
+let THE_FIREBASE_APP, THE_AUTH, THE_FIRESTORE;
 
 dotenv.config();
 
-let {
+const {
   EMULATOR_FIRESTORE_HOST,
   EMULATOR_FIRESTORE_SSL,
   EMULATOR_USE_EMULATOR,
@@ -53,35 +64,41 @@ const connectToFirestore = async () => {
   if (Boolean(EMULATOR_USE_EMULATOR === 'true')) {
     EMULATOR_CONFIG = {
       host: EMULATOR_FIRESTORE_HOST,
+      host: EMULATOR_FIRESTORE_PORT,
       ssl: EMULATOR_FIRESTORE_SSL,
     };
   }
 
   // Initialize the Firebase client SDK
   //
-  firebase.initializeApp(FIREBASE_CONFIG);
+  THE_FIREBASE_APP = initializeApp(FIREBASE_CONFIG);
 
-  let firestoreDB = firebase.firestore();
+  THE_FIRESTORE = getFirestore(THE_FIREBASE_APP);
   if (EMULATOR_CONFIG) {
     console.log(
       `USING EMULATOR: Firestore: ${JSON.stringify(EMULATOR_CONFIG.firestore)}`
     );
-    firestoreDB.settings(EMULATOR_CONFIG.firestore);
+    connectFirestoreEmulator(
+      THE_FIRESTORE,
+      EMULATOR_CONFIG.firestore.host,
+      EMULATOR_CONFIG.firestore.port
+    );
   }
 
-  await firebase.auth().signInWithEmailAndPassword(USER.email, USER.password);
+  THE_AUTH = getAuth(THE_FIREBASE_APP);
+  await signInWithEmailAndPassword(THE_AUTH, USER.email, USER.password);
 
-  return firestoreDB;
+  return THE_FIRESTORE;
 };
 
 const loadTranslationsToFirestore = async (db, translations) => {
   // Populate Firestore with the translation data
-  const collRef = db.collection(I18N_FIRESTORE_COLLECTION_NAME);
+  const collRef = collection(db, I18N_FIRESTORE_COLLECTION_NAME);
   let listOfLangs = new Set();
 
   for (let i = 0; i < translations.length; i++) {
-    let tran = translations[i];
-    let currLang = {
+    const tran = translations[i];
+    const currLang = {
       [I18N_LANGUAGE_FIELD_NAME]: tran.lang,
       [I18N_NAMESPACE_FIELD_NAME]: tran.ns,
       [I18N_DATA_FIELD_NAME]: tran.data,
@@ -89,15 +106,20 @@ const loadTranslationsToFirestore = async (db, translations) => {
 
     listOfLangs.add(tran.lang);
 
-    let querySnap = await collRef
-      .where(I18N_LANGUAGE_FIELD_NAME, '==', tran.lang)
-      .where(I18N_NAMESPACE_FIELD_NAME, '==', tran.ns)
-      .get();
+    const q = query(
+      collRef,
+      where(I18N_LANGUAGE_FIELD_NAME, '==', tran.lang),
+      where(I18N_NAMESPACE_FIELD_NAME, '==', tran.ns)
+    );
+
+    const querySnap = await getDocs(q);
 
     if (querySnap.size === 1) {
-      await querySnap.docs[0].ref.set(currLang);
+      // update the existing document
+      await setDoc(querySnap.docs[0].ref, currLang);
     } else if (querySnap.size === 0) {
-      await collRef.add(currLang);
+      // create a new document
+      await addDoc(collRef, currLang);
     } else {
       console.log(
         `loadTranslationsToFirestore(): already multiple instances of` +
@@ -109,36 +131,35 @@ const loadTranslationsToFirestore = async (db, translations) => {
 
   listOfLangs = Array.from(listOfLangs).sort();
 
-  await db
-    .doc(I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID)
-    .set({ translations: listOfLangs });
+  const docRef = doc(db, I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID);
+  await setDoc(docRef, { translations: listOfLangs });
 };
 
 const main = async () => {
   console.log(`>> Connect to Firestore`);
-  FIRESTORE = await connectToFirestore();
+  const fsDB = await connectToFirestore();
 
   console.log(`>> Load translations into Firestore`);
-  await loadTranslationsToFirestore(FIRESTORE, translations);
-  
+  await loadTranslationsToFirestore(fsDB, translations);
+
   console.log(`>> Initialize i18next & i18next-node-firestore-backend`);
   let be = await i18next.use(Backend).init({
     backend: {
-      firestore: FIRESTORE,
+      firestore: fsDB,
+      firestoreModule: FIRESTORE_MODULE,
       collectionName: I18N_FIRESTORE_COLLECTION_NAME,
       languageFieldName: I18N_LANGUAGE_FIELD_NAME,
       namespaceFieldName: I18N_NAMESPACE_FIELD_NAME,
       dataFieldName: I18N_DATA_FIELD_NAME,
-      debug: false
+      debug: true,
     },
     debug: false,
     fallbackLng: 'en',
     ns: LIST_OF_NAMESPACES,
   });
-  
+
   console.log(`>> Start translating!\n`);
   for (let i = 0; i < translations.length; i += 1) {
-
     // We only use the translation table here to get the keys.
     // We fetch the translation values from Firestore.
     // In a normal app, you don't loop over the translations values.
@@ -152,8 +173,8 @@ const main = async () => {
       let x = t(`${ns}:${key}`);
       console.log(`  ${lang} => ${ns}:${key} >> ${x}`);
     });
-    
-    let key = "does-not-exist"
+
+    let key = 'does-not-exist';
     let x = t(`${ns}:${key}`);
     console.log(`  ${lang} => ${ns}:${key} >> ${x}`);
   }
@@ -161,12 +182,10 @@ const main = async () => {
 
 const gracefulShutdown = async () => {
   try {
-    firebase.auth().signOut();
-    process.exit(0);
+    signOut(THE_AUTH);
   } catch (error) {
-    console.error(error);
     console.error('Error graceful shutdown');
-    process.exit(1);
+    throw error;
   }
 };
 
@@ -176,4 +195,7 @@ main()
     return gracefulShutdown();
   })
   .then(() => process.exit(0))
-  .catch(console.error);
+  .catch((ex) => {
+    console.error(ex);
+    process.exit(1);
+  });
