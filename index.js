@@ -1,6 +1,5 @@
 // https://www.i18next.com/misc/creating-own-plugins#backend
-
-const defaultOpts = {
+export const defaultOpts = {
   collectionName: 'i18n',
   languageFieldName: 'lang',
   namespaceFieldName: 'ns',
@@ -13,18 +12,19 @@ const defaultOpts = {
   createOnError: console.error,
 };
 
-class Backend {
+export class Backend {
   /**
    * @param {*} services `i18next.services`
    * @param {object} backendOptions Backend Options
-   * @param {object} opts.firestore Firestore instance, already initialized and connected
-   * @param {string} [opts.collectionName='i18n'] Collection name for storing i18next data
-   * @param {string} [opts.languageFieldName="lang"] Field name for language attribute
-   * @param {string} [opts.namespaceFieldName="ns"] Field name for namespace attribute
-   * @param {string} [opts.dataFieldName="data"] Field name for data attribute
-   * @param {function} [opts.readOnError] Error handler for `read` process
-   * @param {function} [opts.readMultiOnError] Error handler for `readMulti` process
-   * @param {function} [opts.createOnError] Error handler for `create` process
+   * @param {Firestore} i18nextOptions.backend.firestore Firestore instance, already initialized and connected
+   * @param {object} i18nextOptions.backend.firestoreModule object from: `import * as FIRESTORE_MODULE from 'firebase/firestore';`
+   * @param {string} [i18nextOptions.backend.collectionName='i18n'] Collection name for storing i18next data
+   * @param {string} [i18nextOptions.backend.languageFieldName="lang"] Field name for language attribute
+   * @param {string} [i18nextOptions.backend.namespaceFieldName="ns"] Field name for namespace attribute
+   * @param {string} [i18nextOptions.backend.dataFieldName="data"] Field name for data attribute
+   * @param {function} [i18nextOptions.backend.readOnError] Error handler for `read` process
+   * @param {function} [i18nextOptions.backend.readMultiOnError] Error handler for `readMulti` process
+   * @param {function} [i18nextOptions.backend.createOnError] Error handler for `create` process
    */
   constructor(services, backendOptions = {}, i18nextOptions = {}) {
     this.services = services;
@@ -50,6 +50,8 @@ class Backend {
       }
 
       this.firestore = bOpts.firestore;
+      this.firestoreModule = bOpts.firestoreModule;
+
       if (bOpts.collectionName) {
         this.opts.collectionName = bOpts.collectionName;
       }
@@ -74,12 +76,15 @@ class Backend {
     ) {
       return null;
     }
-    let querySnap = await this.firestore
-      .collection(this.opts.collectionName)
-      .where(this.opts.languageFieldName, '==', lang)
-      .where(this.opts.namespaceFieldName, '==', ns)
-      .get();
 
+    let collRef = this.firestoreModule.collection(this.firestore, this.opts.collectionName);
+    let q = this.firestoreModule.query(
+      collRef,
+      this.firestoreModule.where(this.opts.languageFieldName, '==', lang),
+      this.firestoreModule.where(this.opts.namespaceFieldName, '==', ns)
+    );
+
+    let querySnap = await this.firestoreModule.getDocs(q);
     if (querySnap.empty) {
       return null;
     }
@@ -120,7 +125,9 @@ class Backend {
         }
         cb(null, (doc && doc[this.opts.dataFieldName]) || {});
       })
-      .catch(this.opts.readOnError);
+      .catch((ex) => {
+        this.opts.readOnError(ex);
+      });
   }
 
   readMulti(langs, nss, cb) {
@@ -145,4 +152,4 @@ class Backend {
 // https://www.i18next.com/misc/creating-own-plugins#make-sure-to-set-the-plugin-type
 Backend.type = 'backend';
 
-module.exports = Backend;
+export default Backend;
