@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [1.0.0](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v0.2.3...v1.0.0) (2023-11-28)
 
+* BREAKING CHANGE: major update to support Firebase "modular API" in Firebase SDK v9.0.0+ ; see the changes to the example apps for details
+
 
 ### Bug Fixes
 
