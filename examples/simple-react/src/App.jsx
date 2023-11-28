@@ -24,15 +24,15 @@ const ScreenDisplayer = () => {
   }
 };
 
-console.log(`GLF: import meta env`, import.meta.env);
-
 const App = () => {
   return (
-    <FirebaseProvider>
-      <AuthProvider>
-        <ScreenDisplayer />
-      </AuthProvider>
-    </FirebaseProvider>
+    <div className='div-app'>
+      <FirebaseProvider>
+        <AuthProvider>
+          <ScreenDisplayer />
+        </AuthProvider>
+      </FirebaseProvider>
+    </div>
   );
 };
 

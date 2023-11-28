@@ -1,10 +1,9 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
+import translations from '../translations';
+import languages from '../language_names';
 
 const getDataKeys = () => {
   let retVal = new Set();
-
-  const translations = require('../translations');
 
   for (let i = 0; i < translations.length; i += 1) {
     // We only use the translation table here to get the keys.
@@ -32,7 +31,7 @@ const DisplayTranslationData = (props) => {
       <thead>
         <tr>
           <th>Key</th>
-          <th>Translation({selectedTranslation})</th>
+          <th>Translation({languages[selectedTranslation]['en']})</th>
         </tr>
       </thead>
       <tbody>

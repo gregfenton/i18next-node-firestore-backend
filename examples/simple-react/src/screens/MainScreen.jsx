@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import * as firestoreModule from 'firebase/firestore';
 
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
@@ -7,11 +8,10 @@ import Backend from 'i18next-node-firestore-backend';
 
 import DisplayTranslationData from '../components/DisplayTranslationData';
 import LanguagePicker from '../components/LanguagePicker';
+import { useAuthContext } from '../providers/AuthProvider';
+import { useFirebaseContext } from '../providers/FirebaseProvider';
 
-let FIRESTORE = null;
 let DEFAULT_TRANSLATION = 'en';
-
-console.log(`GLF: import meta env`, import.meta.env);
 
 let {
   VITE_I18N_FIRESTORE_COLLECTION_NAME,
@@ -24,16 +24,13 @@ let {
 let LIST_OF_NAMESPACES = VITE_I18N_LIST_OF_NAMESPACES?.split(',');
 
 export const MainScreen = (props) => {
-  let authUser = props.authUser;
-  let firebaseApp = props.firebaseApp;
   let availableTranslations = props.availableTranslations;
 
   const [i18nInitialized, setI18nInitialized] = useState(false);
   const [selectedTranslation, setSelectedTranslation] = useState();
 
-  if (!FIRESTORE && firebaseApp) {
-    FIRESTORE = firebaseApp.firestore();
-  }
+  const {user, logout} = useAuthContext();
+  const {myFS} = useFirebaseContext();
 
   // initialize i18next
   useEffect(() => {
@@ -43,7 +40,8 @@ export const MainScreen = (props) => {
         .use(initReactI18next)
         .init({
           backend: {
-            firestore: FIRESTORE,
+            firestore: myFS,
+            firestoreModule: firestoreModule,
             collectionName: VITE_I18N_FIRESTORE_COLLECTION_NAME,
             languageFieldName: VITE_I18N_LANGUAGE_FIELD_NAME,
             namespaceFieldName: VITE_I18N_NAMESPACE_FIELD_NAME,
@@ -66,7 +64,7 @@ export const MainScreen = (props) => {
     };
 
     setupI18Next();
-  }, []);
+  }, [myFS]);
 
   // loads a specific translation when chosen
   useEffect(() => {
@@ -81,7 +79,7 @@ export const MainScreen = (props) => {
 
   return (
     <div>
-      <h2>Hello {authUser.email}</h2>
+      <h2>Hello {user.displayName ?? user.email}</h2>
       <h3>Current Language: {selectedTranslation}</h3>
       <LanguagePicker
         availableTranslations={availableTranslations}
@@ -97,6 +95,8 @@ export const MainScreen = (props) => {
           />
         </div>
       )}
+      <div style={{ marginTop: '10px'}} />
+      <button onClick={logout}>Logout</button>
     </div>
   );
 };

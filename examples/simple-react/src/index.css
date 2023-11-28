@@ -5,13 +5,12 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #0D4182;
+  background-color: #2370cd;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
 
 a {
@@ -19,6 +18,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -29,6 +29,12 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  width: 20%;
+  margin: 0 auto;
+}
+
+.div-app {
+  text-align: center;
 }
 
 h1 {
@@ -36,10 +42,14 @@ h1 {
   line-height: 1.1;
 }
 
+table {
+  margin: 0 auto;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.3em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -47,9 +57,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -60,9 +72,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
