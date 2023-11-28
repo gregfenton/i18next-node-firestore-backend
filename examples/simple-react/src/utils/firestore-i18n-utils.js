@@ -1,54 +1,64 @@
-const translations = require('../translations');
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from 'firebase/firestore';
+import translations from '../translations';
 
 export const loadTranslationsToFirestore = async (
   db,
   setAvailableTranslations
 ) => {
   let {
-    REACT_APP_I18N_FIRESTORE_COLLECTION_NAME,
-    REACT_APP_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID,
-    REACT_APP_I18N_LANGUAGE_FIELD_NAME,
-    REACT_APP_I18N_NAMESPACE_FIELD_NAME,
-    REACT_APP_I18N_DATA_FIELD_NAME,
-  } = process.env;
+    VITE_I18N_FIRESTORE_COLLECTION_NAME,
+    VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID,
+    VITE_I18N_LANGUAGE_FIELD_NAME,
+    VITE_I18N_NAMESPACE_FIELD_NAME,
+    VITE_I18N_DATA_FIELD_NAME,
+  } = import.meta.env;
 
   // Populate Firestore with the translation data
-  const collRef = db.collection(REACT_APP_I18N_FIRESTORE_COLLECTION_NAME);
+  const collRef = collection(db, VITE_I18N_FIRESTORE_COLLECTION_NAME);
   let listOfLangs = new Set();
 
   for (let i = 0; i < translations.length; i++) {
-    let tran = translations[i];
-    let currLang = {
-      [REACT_APP_I18N_LANGUAGE_FIELD_NAME]: tran.lang,
-      [REACT_APP_I18N_NAMESPACE_FIELD_NAME]: tran.ns,
-      [REACT_APP_I18N_DATA_FIELD_NAME]: tran.data,
+    const tran = translations[i];
+    const currLang = {
+      [VITE_I18N_LANGUAGE_FIELD_NAME]: tran.lang,
+      [VITE_I18N_NAMESPACE_FIELD_NAME]: tran.ns,
+      [VITE_I18N_DATA_FIELD_NAME]: tran.data,
     };
 
     listOfLangs.add(tran.lang);
 
-    let querySnap = await collRef
-      .where(REACT_APP_I18N_LANGUAGE_FIELD_NAME, '==', tran.lang)
-      .where(REACT_APP_I18N_NAMESPACE_FIELD_NAME, '==', tran.ns)
-      .get();
+    const q = query(
+      collRef,
+      where(VITE_I18N_LANGUAGE_FIELD_NAME, '==', tran.lang),
+      where(VITE_I18N_NAMESPACE_FIELD_NAME, '==', tran.ns)
+    );
+    const querySnap = await getDocs(q);
 
     if (querySnap.size === 1) {
-      await querySnap.docs[0].ref.set(currLang);
+      await setDoc(querySnap.docs[0].ref, currLang);
     } else if (querySnap.size === 0) {
-      await collRef.add(currLang);
+      await addDoc(collRef, currLang);
     } else {
       console.log(
         `loadTranslationsToFirestore(): already multiple instances of` +
-          ` ${REACT_APP_I18N_LANGUAGE_FIELD_NAME}(${tran.lang}),` +
-          ` ${REACT_APP_I18N_NAMESPACE_FIELD_NAME}(${tran.ns})`
+          ` ${VITE_I18N_LANGUAGE_FIELD_NAME}(${tran.lang}),` +
+          ` ${VITE_I18N_NAMESPACE_FIELD_NAME}(${tran.ns})`
       );
     }
   }
 
   listOfLangs = Array.from(listOfLangs).sort();
 
-  await db
-    .doc(REACT_APP_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID)
-    .set({ translations: listOfLangs });
+  let docRef = doc(db, VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID);
+  await setDoc(docRef, { translations: listOfLangs });
 
   setAvailableTranslations(listOfLangs);
 };

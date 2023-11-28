@@ -1,20 +1,21 @@
-import React, { useEffect } from 'react';
-import loadTranslationsToFirestore from '../utils/firestore-i18n-utils';
+import { doc, getDoc } from 'firebase/firestore';
+import { useEffect } from 'react';
 
-const SelectLanguageScreen = (props) => {
-  let firebaseApp = props.firebaseApp;
+import { useFirebaseContext } from '../providers/FirebaseProvider';
+import { loadTranslationsToFirestore } from '../utils/firestore-i18n-utils';
+
+export const LoadLanguageScreen = (props) => {
   let setAvailableTranslations = props.setAvailableTranslations;
 
-  let FIRESTORE = firebaseApp.firestore();
+  const { myFS } = useFirebaseContext();
 
-  let { REACT_APP_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID } = process.env;
+  let { VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID } = import.meta.env;
 
   // loads list of translations
   useEffect(() => {
     const getLanguages = async () => {
-      let docSnap = await FIRESTORE.doc(
-        REACT_APP_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID
-      ).get();
+      const docRef = doc(myFS, VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID);
+      let docSnap = await getDoc(docRef);
 
       console.log(`getting languages: ${docSnap.exists}`);
       if (docSnap.exists) {
@@ -26,9 +27,9 @@ const SelectLanguageScreen = (props) => {
 
     getLanguages();
   }, [
-    FIRESTORE,
+    myFS,
     setAvailableTranslations,
-    REACT_APP_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID,
+    VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID,
   ]);
 
   return (
@@ -37,13 +38,13 @@ const SelectLanguageScreen = (props) => {
       <p>
         [Translations list not found at Firestore collection path:{' '}
         <em style={{ color: 'darkgreen' }}>
-          {REACT_APP_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID}
+          {VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID}
         </em>
         ]
       </p>
       <button
         onClick={() =>
-          loadTranslationsToFirestore(FIRESTORE, setAvailableTranslations)
+          loadTranslationsToFirestore(myFS, setAvailableTranslations)
         }
       >
         Load Languages
@@ -52,4 +53,4 @@ const SelectLanguageScreen = (props) => {
   );
 };
 
-export default SelectLanguageScreen;
+export default LoadLanguageScreen;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
@@ -10,17 +10,20 @@ import LanguagePicker from '../components/LanguagePicker';
 
 let FIRESTORE = null;
 let DEFAULT_TRANSLATION = 'en';
+
+console.log(`GLF: import meta env`, import.meta.env);
+
 let {
-  REACT_APP_I18N_FIRESTORE_COLLECTION_NAME,
-  REACT_APP_I18N_LANGUAGE_FIELD_NAME,
-  REACT_APP_I18N_NAMESPACE_FIELD_NAME,
-  REACT_APP_I18N_DATA_FIELD_NAME,
-  REACT_APP_I18N_LIST_OF_NAMESPACES
-} = process.env;
+  VITE_I18N_FIRESTORE_COLLECTION_NAME,
+  VITE_I18N_LANGUAGE_FIELD_NAME,
+  VITE_I18N_NAMESPACE_FIELD_NAME,
+  VITE_I18N_DATA_FIELD_NAME,
+  VITE_I18N_LIST_OF_NAMESPACES,
+} = import.meta.env;
 
-let LIST_OF_NAMESPACES = REACT_APP_I18N_LIST_OF_NAMESPACES.split(',');
+let LIST_OF_NAMESPACES = VITE_I18N_LIST_OF_NAMESPACES?.split(',');
 
-const MainScreen = (props) => {
+export const MainScreen = (props) => {
   let authUser = props.authUser;
   let firebaseApp = props.firebaseApp;
   let availableTranslations = props.availableTranslations;
@@ -41,10 +44,10 @@ const MainScreen = (props) => {
         .init({
           backend: {
             firestore: FIRESTORE,
-            collectionName: REACT_APP_I18N_FIRESTORE_COLLECTION_NAME,
-            languageFieldName: REACT_APP_I18N_LANGUAGE_FIELD_NAME,
-            namespaceFieldName: REACT_APP_I18N_NAMESPACE_FIELD_NAME,
-            dataFieldName: REACT_APP_I18N_DATA_FIELD_NAME,
+            collectionName: VITE_I18N_FIRESTORE_COLLECTION_NAME,
+            languageFieldName: VITE_I18N_LANGUAGE_FIELD_NAME,
+            namespaceFieldName: VITE_I18N_NAMESPACE_FIELD_NAME,
+            dataFieldName: VITE_I18N_DATA_FIELD_NAME,
             debug: true,
           },
           debug: false,
@@ -52,7 +55,7 @@ const MainScreen = (props) => {
           interpolation: {
             escapeValue: false, // not needed for react
           },
-          load: 'currentOnly',  // don't auto-load other langs (en vs. en-US)
+          load: 'currentOnly', // don't auto-load other langs (en vs. en-US)
           ns: LIST_OF_NAMESPACES,
           react: {
             useSuspense: false, // <---- this will do the magic
@@ -88,7 +91,10 @@ const MainScreen = (props) => {
         <div>Loading...</div>
       ) : (
         <div style={{ marginTop: '10px' }}>
-          <DisplayTranslationData selectedTranslation={selectedTranslation} listOfNamespaces={LIST_OF_NAMESPACES} />
+          <DisplayTranslationData
+            selectedTranslation={selectedTranslation}
+            listOfNamespaces={LIST_OF_NAMESPACES}
+          />
         </div>
       )}
     </div>

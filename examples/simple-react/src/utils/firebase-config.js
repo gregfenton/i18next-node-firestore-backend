@@ -1,6 +1,5 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
+import {initializeApp} from 'firebase/app';
+import {getFirestore} from 'firebase/firestore';
 
 // Get these values from
 //  Firebase Console
@@ -19,9 +18,9 @@ const firebaseConfig = {
 };
 
 // initialize the client app
-firebase.initializeApp(firebaseConfig);
+const myApp = initializeApp(firebaseConfig);
 
 // initialize Firestore in the client app
-firebase.firestore();
+const myFS = getFirestore(myApp);
 
-export default firebase;
+export default myFS;

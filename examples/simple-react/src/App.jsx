@@ -1,40 +1,39 @@
 import { useState } from 'react';
-import firebaseApp from './utils/firebase-config';
-import AuthenticationScreen from './screens/AuthenticationScreen';
-import LoadLanguagesScreen from './screens/LoadLanguageScreen.jsx';
-import MainScreen from './screens/MainScreen.jsx';
+import { AuthProvider, useAuthContext } from './providers/AuthProvider.jsx';
+import { FirebaseProvider } from './providers/FirebaseProvider.jsx';
+import { AuthenticationScreen } from './screens/AuthenticationScreen';
+import { LoadLanguageScreen } from './screens/LoadLanguageScreen.jsx';
+import { MainScreen } from './screens/MainScreen.jsx';
 
-const App = () => {
+const ScreenDisplayer = () => {
   const [availableTranslations, setAvailableTranslations] = useState();
-  const [authUser, setAuthUser] = useState();
 
-  if (!authUser) {
+  const { user } = useAuthContext();
+  if (!user) {
     // First, initialize Firebase & authenticate user
-    return (
-      <AuthenticationScreen
-        setAuthUser={setAuthUser}
-        firebaseApp={firebaseApp}
-      />
-    );
+    return <AuthenticationScreen />;
   } else if (!availableTranslations) {
     // Second, ensure Firestore has the translation data loaded into it
     return (
-      <LoadLanguagesScreen
-        firebaseApp={firebaseApp}
-        setAvailableTranslations={setAvailableTranslations}
-      />
+      <LoadLanguageScreen setAvailableTranslations={setAvailableTranslations} />
     );
   } else {
     // Third, authenticated & have a data...so initialize i18next
     // & show the translations!
-    return (
-      <MainScreen
-        authUser={authUser}
-        firebaseApp={firebaseApp}
-        availableTranslations={availableTranslations}
-      />
-    );
+    return <MainScreen availableTranslations={availableTranslations} />;
   }
+};
+
+console.log(`GLF: import meta env`, import.meta.env);
+
+const App = () => {
+  return (
+    <FirebaseProvider>
+      <AuthProvider>
+        <ScreenDisplayer />
+      </AuthProvider>
+    </FirebaseProvider>
+  );
 };
 
 export default App;
