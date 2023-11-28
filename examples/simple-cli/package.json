@@ -25,7 +25,8 @@
     "dotenv": "^16.3.1",
     "firebase": "^10.7.0",
     "i18next": "^23.7.7",
-    "i18next-express-middleware": "^1.9.1"
+    "i18next-express-middleware": "^1.9.1",
+    "i18next-node-firestore-backend": ">=1.0.0"
   },
   "scripts": {
     "example": "node app.js",

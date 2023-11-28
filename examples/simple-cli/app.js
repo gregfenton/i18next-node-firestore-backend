@@ -16,7 +16,7 @@ import * as FIRESTORE_MODULE from 'firebase/firestore';
 import dotenv from 'dotenv';
 
 import i18next from 'i18next';
-import Backend from '../../index.js';
+import Backend from 'i18next-node-firestore-backend';
 
 import translations from './translations.js';
 
