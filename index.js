@@ -52,6 +52,14 @@ export class Backend {
       this.firestore = bOpts.firestore;
       this.firestoreModule = bOpts.firestoreModule;
 
+      if (!this.firestore) {
+        throw new Error(`${this.MODNAME}: i18nextOptions.backend.firestore is null or undefined`);
+      }
+      
+      if (!this.firestoreModule) {
+        throw new Error(`${this.MODNAME}: i18nextOptions.backend.firestoreModule is null or undefined`);
+      }
+
       if (bOpts.collectionName) {
         this.opts.collectionName = bOpts.collectionName;
       }
