@@ -1,25 +1,20 @@
 # i18next-node-firestore-backend
 
-A plugin for [i18next](https://www.i18next.com/) that supports fetching translations from a [Google Cloud Firestore](https://firebase.google.com/docs/firestore/) database.
+A plugin for [i18next](https://www.i18next.com/) that supports fetching translations from a [Google Cloud Firestore](https://firebase.google.com/docs/firestore/) database.  This plugin is designed to work with both the Firebase Client SDK and the Firebase Admin SDK.
 
 ## Why this plugin?
 
 [i18next](https://www.i18next.com/) is a fantastic JavaScript module for internationalization -- translations of text and other values.  It supports a wide variety of backends for storing translations.
 
-Using the i18next-node-firestore-backend plugin, you have the ability to add and update translation values for your application in real-time.  No need to re-deploy your application to update translations.  Simply update the values in your Firestore Database and your application can fetch the new values.  This plugin can be used in any JS application, including modern web systems such as React, Angular, Vue, etc.
+Using the i18next-node-firestore-backend plugin, you have the ability to add and update translation values for your application in real-time.  No need to re-deploy your application to update translations.  Simply update the values in your Firestore Database and your application can fetch the new values.  This plugin can be used in any JS application, including modern web systems such as React, Angular, Vue, etc. and backend/server systems such as NodeJS, ExpressJS, NestJS, etc.
 
 ## Firebase SDK Versions
 
-This plugin uses the Firebase Client SDK API. Versions of this plugin prior to 1.0.0 used the Firebase "namespaced API".  Versions 1.0.0 and above use the Firebase "modular API".  See [this page](https://firebase.google.com/docs/web/modular-upgrade) for more information.
-
-Note: an error received when using an older version of this plugin with a newer version of the Firebase SDK is:
-  ```
-  TypeError: this.firestore.collection is not a function
-  ```
+This plugin uses either the Firebase Client SDK API or the Firebase Admin SDK API. Version 2.0.0 and above support both the "modular" and the "namespaced" API sets.
 
 ## Getting Started
 
-See the [example applications](examples).  One is a CLI written in JavaScript/NodeJS.  The other is a ReactJS application.  See their respective README files for details as to how to get them running.
+See the [example applications](examples).  There are two client SDK examples: a CLI written in JavaScript, and a ReactJS/Vite application.  There is also an admin SDK example: a CLI app.  See their respective README files for details as to how to get them running.
 
 ## Acknowledgements
 
