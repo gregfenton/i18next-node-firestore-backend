@@ -17,7 +17,7 @@ export class Backend {
    * @param {*} services `i18next.services`
    * @param {object} backendOptions Backend Options
    * @param {Firestore} i18nextOptions.backend.firestore Firestore instance, already initialized and connected
-   * @param {object} i18nextOptions.backend.firestoreModule object from: `import * as FIRESTORE_MODULE from 'firebase/firestore';`
+   * @param {{isNamespaced?: boolean, collection?: function, query?: function, where?: function, getDocs?: function}} i18nextOptions.backend.firestoreModule identifies if given Firestore is modular, and if so provides the necessary modular functions
    * @param {string} [i18nextOptions.backend.collectionName='i18n'] Collection name for storing i18next data
    * @param {string} [i18nextOptions.backend.languageFieldName="lang"] Field name for language attribute
    * @param {string} [i18nextOptions.backend.namespaceFieldName="ns"] Field name for namespace attribute
@@ -46,18 +46,33 @@ export class Backend {
       this.debug = bOpts.debug;
 
       if (this.debug) {
-        console.log(`Firestore Backend options: ${JSON.stringify(bOpts)}`);
+        console.log(`${this.MODNAME}:: options: ${JSON.stringify(bOpts)}`);
       }
 
       this.firestore = bOpts.firestore;
       this.firestoreModule = bOpts.firestoreModule;
 
       if (!this.firestore) {
-        throw new Error(`${this.MODNAME}: i18nextOptions.backend.firestore is null or undefined`);
+        throw new Error(`${this.MODNAME}:: is null or undefined`);
       }
-      
-      if (!this.firestoreModule) {
-        throw new Error(`${this.MODNAME}: i18nextOptions.backend.firestoreModule is null or undefined`);
+
+      if (
+        this.firestoreModule?.useNamespace ||
+        !this.firestoreModule?.collection ||
+        typeof this.firestoreModule.collection !== 'function'
+      ) {
+        this.firestoreIsNamespaced = true;
+      }
+
+      if (this.debug) {
+        if (this.firestoreIsNamespaced) {
+          console.log(`${this.MODNAME}:: using namespaced Firestore`);
+        } else {
+          console.log(
+            `${this.MODNAME}:: using modular Firestore:`,
+            this.firestoreModule
+          );
+        }
       }
 
       if (bOpts.collectionName) {
@@ -72,27 +87,33 @@ export class Backend {
       if (bOpts.dataFieldName) {
         this.opts.dataFieldName = bOpts.dataFieldName;
       }
+
+      if (this.debug) {
+        console.log(
+          `${this.MODNAME}:: this.opts: ${JSON.stringify(this.opts)}`
+        );
+      }
     }
   }
 
-  async getLanguageAndNamespace(lang, ns) {
-    if (
-      !this.firestore ||
-      !this.opts.collectionName ||
-      !this.opts.languageFieldName ||
-      !this.opts.namespaceFieldName
-    ) {
-      return null;
+  /**
+   * @param {string} lang the language code (e.g. "tr" or "en")
+   * @param {string} ns the namespace code (e.g. "colors", "greetings")
+   * @returns {Promise<{data: {[code: string]: string}, language: string, namespace: string}>} the document from Firestore with the translations in field `data`
+   */
+  async getDataFromNamedspacedFirestore(lang, ns) {
+    const collRef = this.firestore.collection(this.opts.collectionName);
+    const q = collRef
+      .where(this.opts.languageFieldName, '==', lang)
+      .where(this.opts.namespaceFieldName, '==', ns);
+
+    const querySnap = await q.get();
+
+    if (this.debug) {
+      console.log(
+        `${this.MODNAME}:: (${this.opts.collectionName}) querySnap.size: ${querySnap.size}`
+      );
     }
-
-    let collRef = this.firestoreModule.collection(this.firestore, this.opts.collectionName);
-    let q = this.firestoreModule.query(
-      collRef,
-      this.firestoreModule.where(this.opts.languageFieldName, '==', lang),
-      this.firestoreModule.where(this.opts.namespaceFieldName, '==', ns)
-    );
-
-    let querySnap = await this.firestoreModule.getDocs(q);
     if (querySnap.empty) {
       return null;
     }
@@ -103,15 +124,93 @@ export class Backend {
       );
     }
 
-    let data = querySnap.docs[0].data();
+    const data = querySnap.docs[0].data();
+
+    if (this.debug) {
+      console.log(`${this.MODNAME}:: collection data:`, data);
+    }
 
     return data;
   }
 
+  /**
+   * @param {string} lang the language code (e.g. "tr" or "en")
+   * @param {string} ns the namespace code (e.g. "colors", "greetings")
+   * @returns {Promise<{data: {[code: string]: string}, language: string, namespace: string}>} the document from Firestore with the translations in field `data`
+   */
+  async getDataFromModularFirestore(lang, ns) {
+    const collRef = this.firestoreModule.collection(
+      this.firestore,
+      this.opts.collectionName
+    );
+    const q = this.firestoreModule.query(
+      collRef,
+      this.firestoreModule.where(this.opts.languageFieldName, '==', lang),
+      this.firestoreModule.where(this.opts.namespaceFieldName, '==', ns)
+    );
+
+    const querySnap = await this.firestoreModule.getDocs(q);
+    if (this.debug) {
+      console.log(
+        `${this.MODNAME}:: (${this.opts.collectionName}) querySnap.size: ${querySnap.size}`
+      );
+    }
+    if (querySnap.empty) {
+      return null;
+    }
+
+    if (querySnap.size > 1) {
+      console.warn(
+        `${this.MODNAME}: Found ${querySnap.size} docs for namespace ${ns}`
+      );
+    }
+
+    const data = querySnap.docs[0].data();
+
+    if (this.debug) {
+      console.log(`${this.MODNAME}:: collection data:`, data);
+    }
+
+    return data;
+  }
+
+  /**
+   * @param {string} lang the language code (e.g. "tr" or "en")
+   * @param {string} ns the namespace code (e.g. "colors", "greetings")
+   * @returns {Promise<{data: {[code: string]: string}, language: string, namespace: string}>} the document from Firestore with the translations in field `data`
+   */
+  async getLanguageAndNamespace(lang, ns) {
+    if (
+      !this.firestore ||
+      !this.opts.collectionName ||
+      !this.opts.languageFieldName ||
+      !this.opts.namespaceFieldName
+    ) {
+      return null;
+    }
+
+    let data;
+    if (this.firestoreIsNamespaced) {
+      data = this.getDataFromNamedspacedFirestore(lang, ns);
+    } else {
+      data = this.getDataFromModularFirestore(lang, ns);
+    }
+    return data;
+  }
+
+  /**
+   *
+   * @param {string[]} langs array of languages
+   * @param {string[]} nss array of namespaces
+   * @returns {Promise<{[lang: string]: {[ns: string]: {data: {[code: string]: string}, language: string, namespace: string}}}>
+   */
   async getLanguagesAndNamespaces(langs, nss) {
     let res = {};
     for (let i = 0; i < langs.length; i++) {
       for (let j = 0; j < nss.length; j++) {
+        if (!res[langs[i]]) {
+          res[langs[i]] = {};
+        }
         res[langs[i]][nss[j]] = await this.getLanguageAndNamespace(
           langs[i],
           nss[j]
