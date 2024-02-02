@@ -2,6 +2,7 @@
   "name": "vite-project",
   "private": true,
   "version": "1.0.0",
+  "description": "ReactJS example of using i18next-node-firestore-backend and Firebase Web Client SDK",
   "type": "module",
   "scripts": {
     "dev": "vite",

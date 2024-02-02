@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "type": "module",
-  "description": "CLI-based NodeJS example of using i18next-node-firestore-backend",
+  "description": "CLI-based NodeJS example of using i18next-node-firestore-backend and Firebase Client SDK",
   "homepage": "https://github.com/gregfenton/i18next-node-firestore-backend",
   "keywords": [
     "i18next",

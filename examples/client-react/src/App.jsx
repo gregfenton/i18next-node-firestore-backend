@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AuthProvider, useAuthContext } from './providers/AuthProvider.jsx';
 import { FirebaseProvider } from './providers/FirebaseProvider.jsx';
-import { AuthenticationScreen } from './screens/AuthenticationScreen';
+import { AuthenticationScreen } from './screens/AuthenticationScreen.jsx';
 import { LoadLanguageScreen } from './screens/LoadLanguageScreen.jsx';
 import { MainScreen } from './screens/MainScreen.jsx';
 
