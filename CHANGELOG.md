@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v1.0.0...v2.0.0) (2024-02-02)
+
+
+### Features
+
+* separate and add proper support for modular vs. namespaced ([a8f4c59](https://github.com/gregfenton/i18next-node-firestore-backend/commit/a8f4c59b07c71002b8595fbb800ab6b5379f626f))
+
 ## [1.0.0](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v0.2.3...v1.0.0) (2023-11-28)
 
 * BREAKING CHANGE: major update to support Firebase "modular API" in Firebase SDK v9.0.0+ ; see the changes to the example apps for details
