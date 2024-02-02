@@ -4,11 +4,8 @@ export const defaultOpts = {
   languageFieldName: 'lang',
   namespaceFieldName: 'ns',
   dataFieldName: 'data',
-  // eslint-disable-next-line no-console
   readOnError: console.error,
-  // eslint-disable-next-line no-console
   readMultiOnError: console.error,
-  // eslint-disable-next-line no-console
   createOnError: console.error,
 };
 
@@ -17,7 +14,7 @@ export class Backend {
    * @param {*} services `i18next.services`
    * @param {object} backendOptions Backend Options
    * @param {Firestore} i18nextOptions.backend.firestore Firestore instance, already initialized and connected
-   * @param {{isNamespaced?: boolean, collection?: function, query?: function, where?: function, getDocs?: function}} i18nextOptions.backend.firestoreModule identifies if given Firestore is modular, and if so provides the necessary modular functions
+   * @param {{isNamespaced?: boolean, collection?: Function, query?: Function, where?: Function, getDocs?: Function}} i18nextOptions.backend.firestoreModule identifies if given Firestore is modular, and if so provides the necessary modular functions
    * @param {string} [i18nextOptions.backend.collectionName='i18n'] Collection name for storing i18next data
    * @param {string} [i18nextOptions.backend.languageFieldName="lang"] Field name for language attribute
    * @param {string} [i18nextOptions.backend.namespaceFieldName="ns"] Field name for namespace attribute
