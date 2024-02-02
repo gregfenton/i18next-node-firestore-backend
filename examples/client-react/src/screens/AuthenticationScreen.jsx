@@ -5,8 +5,7 @@ import { useEffect, useState } from 'react';
 
 import { useFirebaseContext } from '../providers/FirebaseProvider';
 
-export const AuthenticationScreen = (props) => {
-  let setAuthUser = props.setAuthUser;
+export const AuthenticationScreen = () => {
   const { myAuth } = useFirebaseContext();
 
   const [loginFailedMessage, setLoginFailedMessage] = useState();
@@ -34,7 +33,7 @@ export const AuthenticationScreen = (props) => {
         },
       },
     });
-  }, [myAuth, setAuthUser]);
+  }, [myAuth]);
 
   return (
     <div>

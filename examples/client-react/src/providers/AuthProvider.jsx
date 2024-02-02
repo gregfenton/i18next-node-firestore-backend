@@ -20,6 +20,7 @@ const AuthProvider = (props) => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [authErrorMessages, setAuthErrorMessages] = useState();
 
   const { myAuth, myFS } = useFirebaseContext();
@@ -47,7 +48,7 @@ const AuthProvider = (props) => {
     const listenToUserDoc = async (uid) => {
       try {
         let docRef = doc(myFS, PROFILE_COLLECTION, uid);
-        unsubscribe = await onSnapshot(
+        unsubscribe = onSnapshot(
           docRef,
           (docSnap) => {
             let profileData = docSnap.data();
@@ -58,6 +59,7 @@ const AuthProvider = (props) => {
               ]);
             }
             setProfile(profileData);
+            setProfileLoading(false);
           },
           (firestoreErr) => {
             console.error(
@@ -177,7 +179,7 @@ const AuthProvider = (props) => {
     }
   };
 
-  if (authLoading) {
+  if (authLoading || profileLoading) {
     return <h1>Loading</h1>;
   }
 
@@ -185,6 +187,7 @@ const AuthProvider = (props) => {
     authErrorMessages,
     authLoading,
     profile,
+    profileLoading,
     user,
     login: loginFunction,
     logout: logoutFunction,

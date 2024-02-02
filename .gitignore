@@ -1,5 +1,7 @@
+.env
 .vscode/
 coverage/
+examples/**/.env
+examples/**/node_modules
+examples/**/package-lock.json
 node_modules/
-.env
-examples/simple-cli/.env

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import * as firestoreModule from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
@@ -10,6 +10,7 @@ import DisplayTranslationData from '../components/DisplayTranslationData';
 import LanguagePicker from '../components/LanguagePicker';
 import { useAuthContext } from '../providers/AuthProvider';
 import { useFirebaseContext } from '../providers/FirebaseProvider';
+import { deleteTranslationsFromFirestore } from '../utils/firestore-i18n-utils';
 
 let DEFAULT_TRANSLATION = 'en';
 
@@ -24,13 +25,13 @@ let {
 let LIST_OF_NAMESPACES = VITE_I18N_LIST_OF_NAMESPACES?.split(',');
 
 export const MainScreen = (props) => {
-  let availableTranslations = props.availableTranslations;
+  const { availableTranslations, setAvailableTranslations } = props;
 
   const [i18nInitialized, setI18nInitialized] = useState(false);
   const [selectedTranslation, setSelectedTranslation] = useState();
 
-  const {user, logout} = useAuthContext();
-  const {myFS} = useFirebaseContext();
+  const { user, logout } = useAuthContext();
+  const { myFS } = useFirebaseContext();
 
   // initialize i18next
   useEffect(() => {
@@ -86,17 +87,35 @@ export const MainScreen = (props) => {
         setSelectedTranslation={setSelectedTranslation}
       />
       {!i18nInitialized ? (
-        <div>Loading...</div>
+        <div style={{ height: '250px', marginTop: '10px' }}>
+          <h1>Loading...</h1>
+        </div>
       ) : (
-        <div style={{ marginTop: '10px' }}>
+        <div style={{ minHeight: '250px', marginTop: '10px' }}>
           <DisplayTranslationData
             selectedTranslation={selectedTranslation}
             listOfNamespaces={LIST_OF_NAMESPACES}
           />
         </div>
       )}
-      <div style={{ marginTop: '10px'}} />
-      <button onClick={logout}>Logout</button>
+      <div style={{ marginTop: '10px' }} />
+      <button
+        style={{ margin: '10px', backgroundColor: 'red' }}
+        onClick={() =>
+          deleteTranslationsFromFirestore(myFS, setAvailableTranslations)
+        }
+      >
+        Delete Tranlation Data
+      </button>
+      <button
+        style={{ margin: '10px' }}
+        onClick={() => {
+          setAvailableTranslations(null);
+          logout();
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
 };

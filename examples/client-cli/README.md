@@ -1,6 +1,6 @@
-# Example NodeJS/CLI use of `i18next-node-firestore-backend`
+# Example NodeJS/CLI use of `i18next-node-firestore-backend` with `firebase`
 
-This is a CLI-based example of using i18next & i18next-node-firestore-backend to fetch translations from Firestore and display them to the console.
+This is a CLI-based example of using i18next & i18next-node-firestore-backend to fetch translations from Firestore using the Firebase Web Client SDK and display those values to the console.
 
 ## Requirements
 
@@ -9,9 +9,21 @@ This is a CLI-based example of using i18next & i18next-node-firestore-backend to
 
 ## Using the example
 
-1. Edit the values in `.env`, especially the FIREBASE values.  You will see the values of your Firebase Project from: `Firebase Console` >> `Project Overview` >> `Project Settings` >> `Your apps` >> (`Web App` or click `Add app` >> `Web app`)
-2. To install required modules, run: `npm install`
-3. To execute the example app, from the example's directory run: `npm run example`
+1. Edit the FIREBASE values in `.env`.  Get the values of your Firebase Project from: `Firebase Console` >> `Project Overview` >> `Project Settings` >> `Your apps` >> (`Web App` or click `Add app` >> `Web app`).  In `.env` set the values of:
+   ```
+   FIREBASE_APIKEY=
+   FIREBASE_AUTHDOMAIN=
+   FIREBASE_DATABASEURL=
+   FIREBASE_PROJECTID=
+   FIREBASE_APPID=
+   ```
+2. Use an existing user or create a new user in your Firebase project's Authentication. Set the user's email and password in `.env`:
+   ```
+   USER_EMAIL=
+   USER_PASSWORD=
+   ```
+3. To install required modules, run: `npm install`
+4. To execute the example app, from the example's directory run: `npm run example`
 
 ## Outline of the example
 

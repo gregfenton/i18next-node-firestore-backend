@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
@@ -8,6 +9,36 @@ import {
   where,
 } from 'firebase/firestore';
 import translations from '../translations';
+
+export const deleteTranslationsFromFirestore = async (db, setAvailableTranslations) => {
+  let {
+    VITE_I18N_FIRESTORE_COLLECTION_NAME,
+    VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID,
+    VITE_I18N_LANGUAGE_FIELD_NAME,
+    VITE_I18N_NAMESPACE_FIELD_NAME,
+  } = import.meta.env;
+
+  const collRef = collection(db, VITE_I18N_FIRESTORE_COLLECTION_NAME);
+
+  for (let i = 0; i < translations.length; i++) {
+    const tran = translations[i];
+    const q = query(
+      collRef,
+      where(VITE_I18N_LANGUAGE_FIELD_NAME, '==', tran.lang),
+      where(VITE_I18N_NAMESPACE_FIELD_NAME, '==', tran.ns)
+    );
+    const querySnap = await getDocs(q);
+    
+    for (let j = 0; j < querySnap.size; j++) {
+      await deleteDoc(querySnap.docs[j].ref);
+    }    
+  }
+
+  const docRef = doc(db, VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID);
+  await deleteDoc(docRef);
+
+  setAvailableTranslations(null);
+}
 
 export const loadTranslationsToFirestore = async (
   db,

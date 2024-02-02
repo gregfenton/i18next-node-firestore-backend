@@ -1,11 +1,12 @@
 import { doc, getDoc } from 'firebase/firestore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useFirebaseContext } from '../providers/FirebaseProvider';
 import { loadTranslationsToFirestore } from '../utils/firestore-i18n-utils';
 
 export const LoadLanguageScreen = (props) => {
-  let setAvailableTranslations = props.setAvailableTranslations;
+  const [isLoading, setIsLoading] = useState(true);
+  const setAvailableTranslations = props.setAvailableTranslations;
 
   const { myFS } = useFirebaseContext();
 
@@ -14,14 +15,19 @@ export const LoadLanguageScreen = (props) => {
   // loads list of translations
   useEffect(() => {
     const getLanguages = async () => {
-      const docRef = doc(myFS, VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID);
-      let docSnap = await getDoc(docRef);
+      setIsLoading(true);
+      try {
+        const docRef = doc(myFS, VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID);
+        let docSnap = await getDoc(docRef);
 
-      console.log(`getting languages: ${docSnap.exists}`);
-      if (docSnap.exists) {
-        let data = docSnap.data();
-        console.log(`getting languages: ${JSON.stringify(data)}`);
-        setAvailableTranslations(data.translations);
+        console.log(`getting languages: ${docSnap.exists()}`);
+        if (docSnap.exists()) {
+          let data = docSnap.data();
+          console.log(`getting languages: ${JSON.stringify(data)}`);
+          setAvailableTranslations(data.translations);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -32,6 +38,9 @@ export const LoadLanguageScreen = (props) => {
     VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID,
   ]);
 
+  if (isLoading) {
+    return <h1>Loading</h1>;
+  }
   return (
     <div>
       <h1>Translations not yet loaded to Firestore</h1>

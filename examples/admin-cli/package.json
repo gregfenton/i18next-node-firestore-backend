@@ -1,9 +1,9 @@
 {
-  "name": "client-cli",
-  "version": "2.0.0",
+  "name": "admin-cli",
+  "version": "1.0.0",
   "license": "MIT",
   "type": "module",
-  "description": "CLI-based NodeJS example of using i18next-node-firestore-backend and Firebase Client SDK",
+  "description": "CLI-based NodeJS example of using i18next-node-firestore-backend and Firebase Admin SDK",
   "homepage": "https://github.com/gregfenton/i18next-node-firestore-backend",
   "keywords": [
     "i18next",
@@ -22,9 +22,9 @@
     "url": "https://github.com/gregfenton/i18next-node-firestore-backend/issues"
   },
   "dependencies": {
-    "dotenv": "^16.3.1",
-    "firebase": "^10.7.0",
-    "i18next": "^23.7.7",
+    "dotenv": "^16.4.1",
+    "firebase-admin": "^12.0.0",
+    "i18next": "^23.8.2",
     "i18next-express-middleware": "^1.9.1",
     "i18next-node-firestore-backend": ">=1.0.0"
   },
