@@ -15,7 +15,7 @@ import {
 import dotenv from 'dotenv';
 
 import i18next from 'i18next';
-import Backend from 'i18next-node-firestore-backend';
+import I18NFirestoreBackend from 'i18next-node-firestore-backend';
 
 import translations from './translations.js';
 
@@ -143,21 +143,35 @@ const main = async () => {
   await loadTranslationsToFirestore(fsDB, translations);
 
   console.log(`>> Initialize i18next & i18next-node-firestore-backend`);
-  let be = await i18next.use(Backend).init({
-    backend: {
-      firestore: fsDB,
-      // we are using the modular Firestore SDK, so pass the modular functions
-      firestoreModule: {isNamespaced: false, collection, query, where, getDocs},
-      collectionName: I18N_FIRESTORE_COLLECTION_NAME,
-      languageFieldName: I18N_LANGUAGE_FIELD_NAME,
-      namespaceFieldName: I18N_NAMESPACE_FIELD_NAME,
-      dataFieldName: I18N_DATA_FIELD_NAME,
-      debug: true,
+
+  /**
+   * The options to initialize i18next-node-firestore-backend plugin
+   */
+  const MY_I18N_FIRESTORE_BACKEND_OPTS = {
+    firestore: fsDB,
+    // we are using the modular Firestore SDK, so pass the modular functions
+    firestoreModule: {
+      isModular: true,
+      functions: { collection, query, where, getDocs },
     },
-    debug: false,
+    collectionName: I18N_FIRESTORE_COLLECTION_NAME,
+    languageFieldName: I18N_LANGUAGE_FIELD_NAME,
+    namespaceFieldName: I18N_NAMESPACE_FIELD_NAME,
+    dataFieldName: I18N_DATA_FIELD_NAME,
+    debug: false, // debug i18next-node-firestore-backend
+  };
+
+  /**
+   * The options to initialize i18next
+   */
+  const MY_I18N_OPTS = {
     fallbackLng: 'en',
     ns: LIST_OF_NAMESPACES,
-  });
+    debug: false, // debug i18next
+    backend: MY_I18N_FIRESTORE_BACKEND_OPTS,
+  };
+
+  const be = await i18next.use(I18NFirestoreBackend).init(MY_I18N_OPTS);
 
   console.log(`>> Start translating!\n`);
   for (let i = 0; i < translations.length; i += 1) {

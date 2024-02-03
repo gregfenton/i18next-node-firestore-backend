@@ -30,6 +30,6 @@
   },
   "scripts": {
     "example": "node app.js",
-    "example-dbg": "node --inspect-brk app.js"
+    "example-dbg": "node --inspect app.js"
   }
 }

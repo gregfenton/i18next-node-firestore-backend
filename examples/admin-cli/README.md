@@ -11,12 +11,12 @@ This is a CLI-based example of using i18next & i18next-node-firestore-backend to
 
 Following the information for [initializing the Admin SDK in non-Google environments](https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments):
 1. In the `Firebase Console` >> `Project Overview` >> `Project Settings` >> `Service Accounts`.
-2. Click `Generate new private key`, then confirm by clicking `Generate key`.
-3. Save the JSON file containing the key to the root of this project as `service-account.json`.
+1. Click `Generate new private key`, then confirm by clicking `Generate key`.
+1. Save the JSON file containing the key to the root of this project as `service-account.json`.
    ***Note***: the Service Account file is sensitive as it gives access to your Firebase project.
-4. Review or edit the values in `.env`, especially the GOOGLE_APPLICATION_CREDENTIALS value.
-5. To install required modules, run: `npm install`
-6. To execute the example app, from the example's directory run: `npm run example`
+1. Review or edit the values in `.env`, especially the GOOGLE_APPLICATION_CREDENTIALS value.
+1. To install required modules, run: `npm install`
+1. To execute the example app, from the example's directory run: `npm run example`
 
 ## Outline of the example
 
@@ -27,6 +27,35 @@ The app's basic flow is:
 1. Initializes i18next & the i18next-node-firestore-backend
 1. Iterates over the set of translation keys, fetching translation values via i18next, which in turn is fetching the values from Firestore.
 1. Exit.
+
+## Understanding the example
+
+The main configuration for `i18next-node-firestore-backend` is in `app.js`.  Initialization is done with the following options. See the full code for definitions of the various constants used.
+
+```js
+/**
+ * The options to initialize i18next-node-firestore-backend plugin
+ */
+const MY_I18N_FIRESTORE_BACKEND_OPTS = {
+  firestore: fsDB,
+  // we are using the namespaced Admin SDK, so pass the modular functions
+  firestoreModule: { isModular: false },
+  collectionName: I18N_FIRESTORE_COLLECTION_NAME,
+  languageFieldName: I18N_LANGUAGE_FIELD_NAME,
+  namespaceFieldName: I18N_NAMESPACE_FIELD_NAME,
+  dataFieldName: I18N_DATA_FIELD_NAME,
+  debug: false, // debug i18next-node-firestore-backend
+};
+/**
+ * The options to initialize i18next
+ */
+const MY_I18N_OPTS = {
+  fallbackLng: 'en',
+  ns: LIST_OF_NAMESPACES,
+  debug: false, // debug i18next
+  backend: MY_I18N_FIRESTORE_BACKEND_OPTS,
+};
+```
 
 ## Acknowledgements
 

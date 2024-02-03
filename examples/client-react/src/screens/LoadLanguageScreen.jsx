@@ -20,10 +20,9 @@ export const LoadLanguageScreen = (props) => {
         const docRef = doc(myFS, VITE_I18N_FIRESTORE_TRANSLATION_LIST_DOC_ID);
         let docSnap = await getDoc(docRef);
 
-        console.log(`getting languages: ${docSnap.exists()}`);
         if (docSnap.exists()) {
           let data = docSnap.data();
-          console.log(`getting languages: ${JSON.stringify(data)}`);
+          console.log(`<LoadLanguageScreen> getting languages:`, data);
           setAvailableTranslations(data.translations);
         }
       } finally {

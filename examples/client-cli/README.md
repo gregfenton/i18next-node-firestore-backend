@@ -17,13 +17,13 @@ This is a CLI-based example of using i18next & i18next-node-firestore-backend to
    FIREBASE_PROJECTID=
    FIREBASE_APPID=
    ```
-2. Use an existing user or create a new user in your Firebase project's Authentication. Set the user's email and password in `.env`:
+1. Use an existing user or create a new user in your Firebase project's Authentication. Set the user's email and password in `.env`:
    ```
    USER_EMAIL=
    USER_PASSWORD=
    ```
-3. To install required modules, run: `npm install`
-4. To execute the example app, from the example's directory run: `npm run example`
+1. To install required modules, run: `npm install`
+1. To execute the example app, from the example's directory run: `npm run example`
 
 ## Outline of the example
 
@@ -34,6 +34,38 @@ The app's basic flow is:
 1. Initializes i18next & the i18next-node-firestore-backend
 1. Iterates over the set of translation keys, fetching translation values via i18next, which in turn is fetching the values from Firestore.
 1. Exit.
+
+## Understanding the example
+
+The main configuration for `i18next-node-firestore-backend` is in `app.js`.  Initialization is done with the following options.  See the full code for definitions of the various constants used.
+
+```js
+/**
+ * The options to initialize i18next-node-firestore-backend plugin
+ */
+const MY_I18N_FIRESTORE_BACKEND_OPTS = {
+  firestore: fsDB,
+  // we are using the modular Firestore SDK, so pass the modular functions
+  firestoreModule: {
+    isModular: true,
+    functions: { collection, query, where, getDocs },
+  },
+  collectionName: I18N_FIRESTORE_COLLECTION_NAME,
+  languageFieldName: I18N_LANGUAGE_FIELD_NAME,
+  namespaceFieldName: I18N_NAMESPACE_FIELD_NAME,
+  dataFieldName: I18N_DATA_FIELD_NAME,
+  debug: false, // debug i18next-node-firestore-backend
+};
+/**
+ * The options to initialize i18next
+ */
+const MY_I18N_OPTS = {
+  fallbackLng: 'en',
+  ns: LIST_OF_NAMESPACES,
+  debug: false, // debug i18next
+  backend: MY_I18N_FIRESTORE_BACKEND_OPTS,
+};
+```
 
 ## Acknowledgements
 

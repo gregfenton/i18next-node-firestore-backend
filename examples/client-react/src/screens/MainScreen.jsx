@@ -1,10 +1,9 @@
-import * as firestoreModule from 'firebase/firestore';
-import { useEffect, useState } from 'react';
-
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import i18next from 'i18next';
+import { useEffect, useState } from 'react';
 import { initReactI18next } from 'react-i18next';
 
-import Backend from 'i18next-node-firestore-backend';
+import I18NFirestoreBackend from 'i18next-node-firestore-backend';
 
 import DisplayTranslationData from '../components/DisplayTranslationData';
 import LanguagePicker from '../components/LanguagePicker';
@@ -35,31 +34,50 @@ export const MainScreen = (props) => {
 
   // initialize i18next
   useEffect(() => {
+    /**
+     * The options to initialize i18next-node-firestore-backend plugin
+     */
+    const MY_I18N_FIRESTORE_OPTS = {
+      firestore: myFS,
+      // pass the Firestore functions to the backend plugin
+      firestoreModule: {
+        isModular: true,
+        functions: {
+          collection,
+          query,
+          where,
+          getDocs,
+        },
+      },
+      collectionName: VITE_I18N_FIRESTORE_COLLECTION_NAME,
+      languageFieldName: VITE_I18N_LANGUAGE_FIELD_NAME,
+      namespaceFieldName: VITE_I18N_NAMESPACE_FIELD_NAME,
+      dataFieldName: VITE_I18N_DATA_FIELD_NAME,
+      debug: false, // debug i18next-node-firestore-backend
+    };
+
+    /**
+     * The options to initialize i18next
+     */
+    const MY_I18N_OPTS = {
+      fallbackLng: 'en',
+      ns: LIST_OF_NAMESPACES,
+      debug: false, // debug i18next
+      backend: MY_I18N_FIRESTORE_OPTS,
+      load: 'currentOnly', // don't auto-load other langs (en vs. en-US)
+      interpolation: {
+        escapeValue: false, // not needed for react
+      },
+      react: {
+        useSuspense: false, // <---- this will do the magic
+      },
+    };
+
     const setupI18Next = async () => {
       await i18next
-        .use(Backend)
+        .use(I18NFirestoreBackend)
         .use(initReactI18next)
-        .init({
-          backend: {
-            firestore: myFS,
-            firestoreModule: firestoreModule,
-            collectionName: VITE_I18N_FIRESTORE_COLLECTION_NAME,
-            languageFieldName: VITE_I18N_LANGUAGE_FIELD_NAME,
-            namespaceFieldName: VITE_I18N_NAMESPACE_FIELD_NAME,
-            dataFieldName: VITE_I18N_DATA_FIELD_NAME,
-            debug: true,
-          },
-          debug: false,
-          fallbackLng: 'en',
-          interpolation: {
-            escapeValue: false, // not needed for react
-          },
-          load: 'currentOnly', // don't auto-load other langs (en vs. en-US)
-          ns: LIST_OF_NAMESPACES,
-          react: {
-            useSuspense: false, // <---- this will do the magic
-          },
-        });
+        .init(MY_I18N_OPTS);
       setI18nInitialized(true);
       setSelectedTranslation(DEFAULT_TRANSLATION);
     };
