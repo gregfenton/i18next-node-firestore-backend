@@ -9,7 +9,8 @@ This is a CLI-based example of using i18next & i18next-node-firestore-backend to
 
 ## Using the example
 
-1. Edit the FIREBASE values in `.env`.  Get the values of your Firebase Project from: `Firebase Console` >> `Project Overview` >> `Project Settings` >> `Your apps` >> (`Web App` or click `Add app` >> `Web app`).  In `.env` set the values of:
+1. Make a copy of the file `.env.example` and name it `.env`
+1. Edit the new file `.env`, setting the following to the values of your Firebase Project from: `Firebase Console` >> `Project Overview` >> `Project Settings` >> `Your apps` >> (`Web App` or click `Add app` >> `Web app`).  In `.env` set the values of:
    ```
    FIREBASE_APIKEY=
    FIREBASE_AUTHDOMAIN=
