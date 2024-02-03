@@ -1,21 +1,3 @@
-export declare const defaultOpts: {
-    collectionName: string;
-    languageFieldName: string;
-    namespaceFieldName: string;
-    dataFieldName: string;
-    readOnError: {
-        (...data: any[]): void;
-        (message?: any, ...optionalParams: any[]): void;
-    };
-    readMultiOnError: {
-        (...data: any[]): void;
-        (message?: any, ...optionalParams: any[]): void;
-    };
-    createOnError: {
-        (...data: any[]): void;
-        (message?: any, ...optionalParams: any[]): void;
-    };
-};
 type I18NFirestoreBackendModuleFuncs = {
     /**
      * the `collection` function from the modular Firestore SDK
@@ -113,33 +95,60 @@ export declare class I18NFirestoreBackend {
     static type: string;
     init(services: any, opts: object, i18nOpts: I18NFirestoreOpts): void;
     /**
-     * @param {string} lang the language code (e.g. "tr" or "en")
-     * @param {string} ns the namespace code (e.g. "colors", "greetings")
-     * @returns {Promise<{data: {[code: string]: string}, language: string, namespace: string}>} the document from Firestore with the translations in field `data`
+     * @param lang the language code (e.g. "tr" or "en")
+     * @param ns the namespace code (e.g. "colors", "greetings")
+     * @returns the document from Firestore with the translations in field `data`
      */
-    getDataFromNamedspacedFirestore(lang: any, ns: any): Promise<any>;
+    getDataFromNamedspacedFirestore(lang: string, ns: string): Promise<{
+        data: {
+            [code: string]: string;
+        };
+        language: string;
+        namespace: string;
+    }>;
     /**
-     * @param {string} lang the language code (e.g. "tr" or "en")
-     * @param {string} ns the namespace code (e.g. "colors", "greetings")
-     * @returns {Promise<{data: {[code: string]: string}, language: string, namespace: string}>} the document from Firestore with the translations in field `data`
+     * @param lang the language code (e.g. "tr" or "en")
+     * @param ns the namespace code (e.g. "colors", "greetings")
+     * @returns the document from Firestore with the translations in field `data`
      */
-    getDataFromModularFirestore(lang: any, ns: any): Promise<any>;
+    getDataFromModularFirestore(lang: string, ns: string): Promise<{
+        data: {
+            [code: string]: string;
+        };
+        language: string;
+        namespace: string;
+    }>;
     /**
-     * @param {string} lang the language code (e.g. "tr" or "en")
-     * @param {string} ns the namespace code (e.g. "colors", "greetings")
-     * @returns {Promise<{data: {[code: string]: string}, language: string, namespace: string}>} the document from Firestore with the translations in field `data`
+     * @param lang the language code (e.g. "tr" or "en")
+     * @param ns the namespace code (e.g. "colors", "greetings")
+     * @returns the document from Firestore with the translations in field `data`
      */
-    getLanguageAndNamespace(lang: any, ns: any): Promise<any>;
+    getLanguageAndNamespace(lang: string, ns: string): Promise<{
+        data: {
+            [code: string]: string;
+        };
+        language: string;
+        namespace: string;
+    }>;
     /**
-     *
-     * @param {string[]} langs array of languages
-     * @param {string[]} nss array of namespaces
-     * @returns {Promise<{[lang: string]: {[ns: string]: {data: {[code: string]: string}, language: string, namespace: string}}}>
+     * @param langs array of languages
+     * @param nss array of namespaces
+     * @returns an object with the translations for each language and namespace
      */
-    getLanguagesAndNamespaces(langs: any, nss: any): Promise<{}>;
-    read(lang: any, ns: any, cb: any): Promise<void>;
-    readMulti(langs: any, nss: any, cb: any): void;
-    create(langs: any, ns: any, key: any, fallbackVal: any, cb: any): void;
+    getLanguagesAndNamespaces(langs: string[], nss: string[]): Promise<{
+        [lang: string]: {
+            [ns: string]: {
+                data: {
+                    [code: string]: string;
+                };
+                language: string;
+                namespace: string;
+            };
+        };
+    }>;
+    read(lang: string, ns: string, cb: Function): Promise<void>;
+    readMulti(langs: string[], nss: string[], cb: Function): void;
+    create(langs: string[], ns: string[], key: string, fallbackVal: string, cb: Function): void;
 }
 export default I18NFirestoreBackend;
 //# sourceMappingURL=index.d.ts.map
