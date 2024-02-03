@@ -28,5 +28,5 @@ Following the instructions from [this page](https://cloudfour.com/thinks/how-to-
 1. update the version in the packages & CHANGELOG.md: `npm run release-bump:patch` (or 'minor' or 'major')
 1. push to your remote: `git push`
 1. push tags too: `npm run release:tag-push`
-1. test a publish of the NPM: `npm publish --dry-run` and review output
-1. publish the NPM: `npm publish`
+1. test a publish of the NPM: `npm run publish-dry-run` and review output
+1. publish the NPM: `npm run publish-publish`

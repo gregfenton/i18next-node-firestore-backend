@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Use i18next with Google Firestore as the backend for storing translation data",
   "type": "module",
-  "main": "./index.js",
+  "main": "./dist/index.js",
   "homepage": "https://github.com/gregfenton/i18next-node-firestore-backend",
   "keywords": [
     "i18next",
@@ -31,7 +31,9 @@
     "release-bump:minor": "standard-version --release-as minor",
     "release-bump:patch": "standard-version --release-as patch",
     "release:tag-push": "git push --follow-tags origin main",
-    "gen-types": "tsc"
+    "build": "tsc",
+    "publish-dry-run": "npm run build && npm publish --dry-run",
+    "publish-publish": "npm run build && npm publish"
   },
   "repository": {
     "type": "git",
@@ -52,9 +54,5 @@
     "prettier": "^3.2.4",
     "standard-version": "^9.5.0",
     "typescript": "^5.3.3"
-  },
-  "jest": {
-    "verbose": true,
-    "transform": {}
   }
 }

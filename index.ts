@@ -9,21 +9,100 @@ export const defaultOpts = {
   createOnError: console.error,
 };
 
-export class Backend {
+type I18NFirestoreBackendModuleFuncs = {
   /**
-   * @param {*} services `i18next.services`
-   * @param {object} backendOptions Backend Options
-   * @param {Firestore} i18nextOptions.backend.firestore Firestore instance, already initialized and connected
-   * @param {{isNamespaced?: boolean, collection?: Function, query?: Function, where?: Function, getDocs?: Function}} i18nextOptions.backend.firestoreModule identifies if given Firestore is modular, and if so provides the necessary modular functions
-   * @param {string} [i18nextOptions.backend.collectionName='i18n'] Collection name for storing i18next data
-   * @param {string} [i18nextOptions.backend.languageFieldName="lang"] Field name for language attribute
-   * @param {string} [i18nextOptions.backend.namespaceFieldName="ns"] Field name for namespace attribute
-   * @param {string} [i18nextOptions.backend.dataFieldName="data"] Field name for data attribute
-   * @param {function} [i18nextOptions.backend.readOnError] Error handler for `read` process
-   * @param {function} [i18nextOptions.backend.readMultiOnError] Error handler for `readMulti` process
-   * @param {function} [i18nextOptions.backend.createOnError] Error handler for `create` process
+   * the `collection` function from the modular Firestore SDK
    */
-  constructor(services, backendOptions = {}, i18nextOptions = {}) {
+  collection: Function;
+  /**
+   * the `query` function from the modular Firestore SDK
+   */
+  query: Function;
+  /**
+   * the `where` function from the modular Firestore SDK
+   */
+  where: Function;
+  /**
+   * the `getDocs` function from the modular Firestore SDK
+   */
+  getDocs: Function;
+};
+
+type I18NFirestoreBackendModuleOpts = {
+  /**
+   * identifies if given `firestore` parameter is modular or namespaced
+   */
+  isModular: boolean;
+  /**
+   * if `firestore` is modular, provides the necessary modular functions
+   */
+  functions?: I18NFirestoreBackendModuleFuncs;
+};
+
+type I18NFirestoreBackendOpts = {
+  /**
+   * Firestore instance, already initialized and connected
+   */
+  firestore: any;
+  /**
+   * identifies if given Firestore is modular, and if so provides the necessary modular functions
+   */
+  firestoreModule: I18NFirestoreBackendModuleOpts;
+  /**
+   * whether to enable debug log output
+   */
+  debug?: boolean;
+  /**
+   * Collection name for storing i18next data
+   */
+  collectionName: string;
+  /**
+   * Field name for language attribute
+   */
+  languageFieldName: string;
+  /**
+   * Field name for namespace attribute
+   */
+  namespaceFieldName: string;
+  /**
+   * Field name for data attribute
+   */
+  dataFieldName: string;
+  /**
+   * Error handler for `read` process
+   */
+  readOnError: (...data: any[]) => void;
+  /**
+   * Error handler for `readMulti` process
+   */
+  readMultiOnError: (...data: any[]) => void;
+  /**
+   * Error handler for `create` process
+   */
+  createOnError: (...data: any[]) => void;
+};
+
+type I18NFirestoreOpts = {
+  /**
+   * the backend options to pass for Firestore configuration
+   */
+  backend: I18NFirestoreBackendOpts;
+};
+
+/**
+ * Backend class defined to support storing and retrieving i18next translations from Firestore
+ */
+export class I18NFirestoreBackend {
+  /**
+   * @param services `i18next.services` - see i18next documentation
+   * @param backendOptions Backend Options - see i18next documentation
+   * @param i18nextOptions i18next Options - see i18next documentation
+   */
+  constructor(
+    services: any,
+    backendOptions: object = {},
+    i18nextOptions: I18NFirestoreOpts
+  ) {
     this.services = services;
     this.opts = backendOptions;
     this.i18nOpts = i18nextOptions;
@@ -32,64 +111,70 @@ export class Backend {
     this.init(services, backendOptions, i18nextOptions);
   }
 
-  init(services, opts, i18nOpts) {
+  services: any;
+  opts: Record<string, any>;
+  i18nOpts: I18NFirestoreOpts;
+  MODNAME: string;
+  debug: boolean;
+  firestore: any;
+  firestoreModule: I18NFirestoreBackendModuleOpts;
+  firestoreIsNamespaced: boolean;
+  static type: string;
+
+  init(services: any, opts: object, i18nOpts: I18NFirestoreOpts) {
     this.services = services;
     this.i18nOpts = i18nOpts;
-    this.opts = { ...defaultOpts, ...this.opts, ...opts };
+    this.opts = { ...defaultOpts, ...opts };
 
-    if (i18nOpts && i18nOpts.backend) {
-      let bOpts = i18nOpts.backend;
+    let bOpts = i18nOpts.backend;
 
-      this.debug = bOpts.debug;
+    this.debug = i18nOpts.backend.debug;
 
-      if (this.debug) {
-        console.log(`${this.MODNAME}:: options: ${JSON.stringify(bOpts)}`);
-      }
+    if (this.debug) {
+      console.log(`${this.MODNAME}:: options: ${JSON.stringify(bOpts)}`);
+    }
 
-      this.firestore = bOpts.firestore;
-      this.firestoreModule = bOpts.firestoreModule;
+    this.firestore = bOpts.firestore;
+    this.firestoreModule = bOpts.firestoreModule;
 
-      if (!this.firestore) {
-        throw new Error(`${this.MODNAME}:: is null or undefined`);
-      }
+    if (!this.firestore) {
+      throw new Error(`${this.MODNAME}:: is null or undefined`);
+    }
 
-      if (
-        this.firestoreModule?.useNamespace ||
-        !this.firestoreModule?.collection ||
-        typeof this.firestoreModule.collection !== 'function'
-      ) {
-        this.firestoreIsNamespaced = true;
-      }
+    if (
+      this.firestoreModule?.isModular ||
+      !this.firestoreModule?.functions.collection ||
+      typeof this.firestoreModule.functions.collection !== 'function'
+    ) {
+      this.firestoreIsNamespaced = true;
+    }
 
-      if (this.debug) {
-        if (this.firestoreIsNamespaced) {
-          console.log(`${this.MODNAME}:: using namespaced Firestore`);
-        } else {
-          console.log(
-            `${this.MODNAME}:: using modular Firestore:`,
-            this.firestoreModule
-          );
-        }
-      }
-
-      if (bOpts.collectionName) {
-        this.opts.collectionName = bOpts.collectionName;
-      }
-      if (bOpts.languageFieldName) {
-        this.opts.languageFieldName = bOpts.languageFieldName;
-      }
-      if (bOpts.namespaceFieldName) {
-        this.opts.namespaceFieldName = bOpts.namespaceFieldName;
-      }
-      if (bOpts.dataFieldName) {
-        this.opts.dataFieldName = bOpts.dataFieldName;
-      }
-
-      if (this.debug) {
+    if (this.debug) {
+      if (this.firestoreIsNamespaced) {
+        console.log(`${this.MODNAME}:: using namespaced Firestore`);
+      } else {
         console.log(
-          `${this.MODNAME}:: this.opts: ${JSON.stringify(this.opts)}`
+          `${this.MODNAME}:: using modular Firestore:`,
+          this.firestoreModule
         );
       }
+    }
+
+    if (bOpts.collectionName) {
+      this.opts.collectionName = bOpts.collectionName;
+    }
+    if (bOpts.languageFieldName) {
+      this.opts.languageFieldName = bOpts.languageFieldName;
+    }
+    if (bOpts.namespaceFieldName) {
+      this.opts.namespaceFieldName = bOpts.namespaceFieldName;
+    }
+    if (bOpts.dataFieldName) {
+      this.opts.dataFieldName = bOpts.dataFieldName;
+    }
+
+    if (this.debug) {
+      console.log(`${this.MODNAME}:: this.opts: ${JSON.stringify(this.opts)}`);
     }
   }
 
@@ -136,17 +221,17 @@ export class Backend {
    * @returns {Promise<{data: {[code: string]: string}, language: string, namespace: string}>} the document from Firestore with the translations in field `data`
    */
   async getDataFromModularFirestore(lang, ns) {
-    const collRef = this.firestoreModule.collection(
+    const collRef = this.firestoreModule.functions.collection(
       this.firestore,
       this.opts.collectionName
     );
-    const q = this.firestoreModule.query(
+    const q = this.firestoreModule.functions.query(
       collRef,
-      this.firestoreModule.where(this.opts.languageFieldName, '==', lang),
-      this.firestoreModule.where(this.opts.namespaceFieldName, '==', ns)
+      this.firestoreModule.functions.where(this.opts.languageFieldName, '==', lang),
+      this.firestoreModule.functions.where(this.opts.namespaceFieldName, '==', ns)
     );
 
-    const querySnap = await this.firestoreModule.getDocs(q);
+    const querySnap = await this.firestoreModule.functions.getDocs(q);
     if (this.debug) {
       console.log(
         `${this.MODNAME}:: (${this.opts.collectionName}) querySnap.size: ${querySnap.size}`
@@ -254,6 +339,6 @@ export class Backend {
 }
 
 // https://www.i18next.com/misc/creating-own-plugins#make-sure-to-set-the-plugin-type
-Backend.type = 'backend';
+I18NFirestoreBackend.type = 'backend';
 
-export default Backend;
+export default I18NFirestoreBackend;
