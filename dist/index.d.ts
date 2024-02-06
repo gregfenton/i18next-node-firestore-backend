@@ -1,3 +1,4 @@
+import { BackendModule, ResourceLanguage } from 'i18next';
 type I18NFirestoreBackendModuleFuncs = {
     /**
      * the `collection` function from the modular Firestore SDK
@@ -77,13 +78,14 @@ type I18NFirestoreOpts = {
 /**
  * Backend class defined to support storing and retrieving i18next translations from Firestore
  */
-export declare class I18NFirestoreBackend {
+export declare class I18NFirestoreBackend implements BackendModule {
     /**
      * @param services `i18next.services` - see i18next documentation
      * @param backendOptions Backend Options - see i18next documentation
      * @param i18nextOptions i18next Options - see i18next documentation
      */
     constructor(services: any, backendOptions: object, i18nextOptions: I18NFirestoreOpts);
+    type: 'backend';
     services: any;
     opts: Record<string, any>;
     i18nOpts: I18NFirestoreOpts;
@@ -148,7 +150,8 @@ export declare class I18NFirestoreBackend {
     }>;
     read(lang: string, ns: string, cb: Function): Promise<void>;
     readMulti(langs: string[], nss: string[], cb: Function): void;
-    create(langs: string[], ns: string[], key: string, fallbackVal: string, cb: Function): void;
+    create(langs: readonly string[], ns: string, key: string, fallbackVal: string): void;
+    save?(language: string, namespace: string, data: ResourceLanguage): void;
 }
 export default I18NFirestoreBackend;
 //# sourceMappingURL=index.d.ts.map

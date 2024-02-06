@@ -40,7 +40,8 @@
     "url": "git+https://github.com/gregfenton/i18next-node-firestore-backend.git"
   },
   "dependencies": {
-    "firebase": ">=10.8.0"
+    "firebase": ">=10.8.0",
+    "i18next": "^23.8.2"
   },
   "devDependencies": {
     "codecov": "^3.8.2",

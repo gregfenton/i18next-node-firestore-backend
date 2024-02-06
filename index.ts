@@ -1,4 +1,6 @@
 // https://www.i18next.com/misc/creating-own-plugins#backend
+import { BackendModule, ResourceLanguage } from 'i18next';
+
 const defaultOpts = {
   collectionName: 'i18n',
   languageFieldName: 'lang',
@@ -92,7 +94,7 @@ type I18NFirestoreOpts = {
 /**
  * Backend class defined to support storing and retrieving i18next translations from Firestore
  */
-export class I18NFirestoreBackend {
+export class I18NFirestoreBackend implements BackendModule {
   /**
    * @param services `i18next.services` - see i18next documentation
    * @param backendOptions Backend Options - see i18next documentation
@@ -110,6 +112,8 @@ export class I18NFirestoreBackend {
 
     this.init(services, backendOptions, i18nextOptions);
   }
+
+  type: 'backend'; // https://www.i18next.com/misc/creating-own-plugins#make-sure-to-set-the-plugin-type
 
   services: any;
   opts: Record<string, any>;
@@ -417,11 +421,10 @@ export class I18NFirestoreBackend {
   }
 
   create(
-    langs: string[],
-    ns: string[],
+    langs: readonly string[],
+    ns: string,
     key: string,
-    fallbackVal: string,
-    cb: Function
+    fallbackVal: string
   ) {
     let x = 'NOT IMPLEMENTED YET';
     if (x === 'NOT IMPLEMENTED YET') {
@@ -429,9 +432,10 @@ export class I18NFirestoreBackend {
       return;
     }
   }
-}
 
-// https://www.i18next.com/misc/creating-own-plugins#make-sure-to-set-the-plugin-type
-I18NFirestoreBackend.type = 'backend';
+  save?(language: string, namespace: string, data: ResourceLanguage): void {
+    throw new Error('NOT IMPLEMENTED YET');
+  }
+}
 
 export default I18NFirestoreBackend;

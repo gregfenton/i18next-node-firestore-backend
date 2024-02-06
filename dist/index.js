@@ -1,4 +1,3 @@
-// https://www.i18next.com/misc/creating-own-plugins#backend
 const defaultOpts = {
     collectionName: 'i18n',
     languageFieldName: 'lang',
@@ -24,6 +23,7 @@ export class I18NFirestoreBackend {
         this.MODNAME = 'i18next-node-firestore-backend';
         this.init(services, backendOptions, i18nextOptions);
     }
+    type; // https://www.i18next.com/misc/creating-own-plugins#make-sure-to-set-the-plugin-type
     services;
     opts;
     i18nOpts;
@@ -203,14 +203,15 @@ export class I18NFirestoreBackend {
             return;
         }
     }
-    create(langs, ns, key, fallbackVal, cb) {
+    create(langs, ns, key, fallbackVal) {
         let x = 'NOT IMPLEMENTED YET';
         if (x === 'NOT IMPLEMENTED YET') {
             console.error(x);
             return;
         }
     }
+    save(language, namespace, data) {
+        throw new Error('NOT IMPLEMENTED YET');
+    }
 }
-// https://www.i18next.com/misc/creating-own-plugins#make-sure-to-set-the-plugin-type
-I18NFirestoreBackend.type = 'backend';
 export default I18NFirestoreBackend;
