@@ -112,8 +112,7 @@ export class I18NFirestoreBackend implements BackendModule {
 
     this.init(services, backendOptions, i18nextOptions);
   }
-
-  type: 'backend'; // https://www.i18next.com/misc/creating-own-plugins#make-sure-to-set-the-plugin-type
+  type: 'backend';
 
   services: any;
   opts: Record<string, any>;
@@ -123,7 +122,6 @@ export class I18NFirestoreBackend implements BackendModule {
   firestore: any;
   firestoreModule: I18NFirestoreBackendModuleOpts;
   firestoreIsNamespaced: boolean;
-  static type: string;
 
   public init(services: any, opts: object, i18nOpts: I18NFirestoreOpts) {
     if (!opts || (typeof opts === 'object' && Object.keys(opts).length === 0)) {

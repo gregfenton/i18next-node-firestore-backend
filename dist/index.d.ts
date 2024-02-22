@@ -94,7 +94,6 @@ export declare class I18NFirestoreBackend implements BackendModule {
     firestore: any;
     firestoreModule: I18NFirestoreBackendModuleOpts;
     firestoreIsNamespaced: boolean;
-    static type: string;
     init(services: any, opts: object, i18nOpts: I18NFirestoreOpts): void;
     /**
      * @param lang the language code (e.g. "tr" or "en")

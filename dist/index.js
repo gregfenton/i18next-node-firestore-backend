@@ -23,7 +23,7 @@ export class I18NFirestoreBackend {
         this.MODNAME = 'i18next-node-firestore-backend';
         this.init(services, backendOptions, i18nextOptions);
     }
-    type; // https://www.i18next.com/misc/creating-own-plugins#make-sure-to-set-the-plugin-type
+    type;
     services;
     opts;
     i18nOpts;
@@ -32,7 +32,6 @@ export class I18NFirestoreBackend {
     firestore;
     firestoreModule;
     firestoreIsNamespaced;
-    static type;
     init(services, opts, i18nOpts) {
         if (!opts || (typeof opts === 'object' && Object.keys(opts).length === 0)) {
             return;
