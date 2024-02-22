@@ -100,7 +100,7 @@ export class I18NFirestoreBackend implements BackendModule {
    * @param backendOptions Backend Options - see i18next documentation
    * @param i18nextOptions i18next Options - see i18next documentation
    */
-  constructor(
+  public constructor(
     services: any,
     backendOptions: object = {},
     i18nextOptions: I18NFirestoreOpts
@@ -125,7 +125,7 @@ export class I18NFirestoreBackend implements BackendModule {
   firestoreIsNamespaced: boolean;
   static type: string;
 
-  init(services: any, opts: object, i18nOpts: I18NFirestoreOpts) {
+  public init(services: any, opts: object, i18nOpts: I18NFirestoreOpts) {
     if (!opts || (typeof opts === 'object' && Object.keys(opts).length === 0)) {
       return;
     }
@@ -340,7 +340,7 @@ export class I18NFirestoreBackend implements BackendModule {
    * @param ns the namespace code (e.g. "colors", "greetings")
    * @returns the document from Firestore with the translations in field `data`
    */
-  async getLanguageAndNamespace(
+  public async getLanguageAndNamespace(
     lang: string,
     ns: string
   ): Promise<{
@@ -367,7 +367,7 @@ export class I18NFirestoreBackend implements BackendModule {
    * @param nss array of namespaces
    * @returns an object with the translations for each language and namespace
    */
-  async getLanguagesAndNamespaces(
+  public async getLanguagesAndNamespaces(
     langs: string[],
     nss: string[]
   ): Promise<{
@@ -394,7 +394,7 @@ export class I18NFirestoreBackend implements BackendModule {
     return res;
   }
 
-  async read(lang: string, ns: string, cb: Function) {
+  public async read(lang: string, ns: string, cb: Function) {
     if (!cb) return;
 
     try {
@@ -410,7 +410,7 @@ export class I18NFirestoreBackend implements BackendModule {
     }
   }
 
-  readMulti(langs: string[], nss: string[], cb: Function) {
+  public readMulti(langs: string[], nss: string[], cb: Function) {
     if (!cb) return;
 
     let x = 'NOT IMPLEMENTED YET';
@@ -420,7 +420,7 @@ export class I18NFirestoreBackend implements BackendModule {
     }
   }
 
-  create(
+  public create(
     langs: readonly string[],
     ns: string,
     key: string,
@@ -433,7 +433,7 @@ export class I18NFirestoreBackend implements BackendModule {
     }
   }
 
-  save?(language: string, namespace: string, data: ResourceLanguage): void {
+  public save?(language: string, namespace: string, data: ResourceLanguage): void {
     throw new Error('NOT IMPLEMENTED YET');
   }
 }
