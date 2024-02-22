@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v2.0.1...v2.0.2) (2024-02-22)
+
+
+### Features
+
+* "implements BackendModule" for use in TypeScript ([fead62b](https://github.com/gregfenton/i18next-node-firestore-backend/commit/fead62bd57d352825ed508760aeecb0d4738f82c))
+
 ### [2.0.1](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v2.0.0...v2.0.1) (2024-02-03)
 
 
