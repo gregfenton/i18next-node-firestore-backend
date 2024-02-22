@@ -10,7 +10,8 @@ const defaultOpts = {
 /**
  * Backend class defined to support storing and retrieving i18next translations from Firestore
  */
-export class I18NFirestoreBackend {
+export class Backend {
+    static type;
     /**
      * @param services `i18next.services` - see i18next documentation
      * @param backendOptions Backend Options - see i18next documentation
@@ -23,7 +24,6 @@ export class I18NFirestoreBackend {
         this.MODNAME = 'i18next-node-firestore-backend';
         this.init(services, backendOptions, i18nextOptions);
     }
-    type;
     services;
     opts;
     i18nOpts;
@@ -209,8 +209,6 @@ export class I18NFirestoreBackend {
             return;
         }
     }
-    save(language, namespace, data) {
-        throw new Error('NOT IMPLEMENTED YET');
-    }
 }
-export default I18NFirestoreBackend;
+Backend.type = 'backend';
+export default Backend;
