@@ -1,7 +1,7 @@
 {
   "name": "client-react",
   "private": true,
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "ReactJS/Vite example app using i18next-node-firestore-backend and Firebase Web Client SDK",
   "type": "module",
   "scripts": {

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.5](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v2.0.4...v2.0.5) (2024-02-22)
+
+
+### Bug Fixes
+
+* seems i18next backend class needs to be named "Backend"... ([f04c275](https://github.com/gregfenton/i18next-node-firestore-backend/commit/f04c275e26e4cdeb6c562f28d3608cab3b68ba92))
+
 ### [2.0.4](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v2.0.3...v2.0.4) (2024-02-22)
 
 
