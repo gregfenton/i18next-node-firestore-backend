@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.7](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v2.0.6...v2.0.7) (2024-08-06)
+
+
+### Bug Fixes
+
+* missing `.type` in class instance ([f393a52](https://github.com/gregfenton/i18next-node-firestore-backend/commit/f393a522ba324a172ee08195fc1880011a164130))
+
 ### [2.0.6](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v2.0.5...v2.0.6) (2024-08-06)
 
 ### [2.0.5](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v2.0.4...v2.0.5) (2024-02-22)
