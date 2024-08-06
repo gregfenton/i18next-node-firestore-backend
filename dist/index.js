@@ -10,7 +10,7 @@ const defaultOpts = {
 /**
  * Backend class defined to support storing and retrieving i18next translations from Firestore
  */
-export class Backend {
+export default class I18NextFirestoreBackend {
     static type;
     /**
      * @param services `i18next.services` - see i18next documentation
@@ -209,6 +209,5 @@ export class Backend {
             return;
         }
     }
+    type;
 }
-Backend.type = 'backend';
-export default Backend;

@@ -6,7 +6,7 @@ A plugin for [i18next](https://www.i18next.com/) that supports fetching translat
 
 [i18next](https://www.i18next.com/) is a fantastic JavaScript module for internationalization -- translations of text and other values.  It supports a wide variety of backends for storing translations.
 
-Using the i18next-node-firestore-backend plugin, you have the ability to add and update translation values for your application in real-time.  No need to re-deploy your application to update translations.  Simply update the values in your Firestore Database and your application can fetch the new values.  This plugin can be used in any JS application, including modern web systems such as React, Angular, Vue, etc. and backend/server systems such as NodeJS, ExpressJS, NestJS, etc.
+Using the _i18next-node-firestore-backend_ plugin, you have the ability to add and update translation values for your application in real-time.  No need to re-deploy your application to update translations.  Simply update the values in your Firestore Database and your application can fetch the new values.  This plugin can be used in any JS application, including modern web systems such as React, Angular, Vue, etc. and backend/server systems such as NodeJS, ExpressJS, NestJS, etc.
 
 ## Firebase SDK Versions
 
