@@ -78,7 +78,7 @@ type I18NFirestoreOpts = {
 /**
  * Backend class defined to support storing and retrieving i18next translations from Firestore
  */
-export default class I18NextFirestoreBackend implements BackendModule<I18NFirestoreBackendOpts> {
+export declare class I18NextFirestoreBackend implements BackendModule<I18NFirestoreBackendOpts> {
     static type: 'backend';
     /**
      * @param services `i18next.services` - see i18next documentation
@@ -152,5 +152,5 @@ export default class I18NextFirestoreBackend implements BackendModule<I18NFirest
     create(langs: readonly string[], ns: string, key: string, fallbackVal: string): void;
     type: 'backend';
 }
-export {};
+export default I18NextFirestoreBackend;
 //# sourceMappingURL=index.d.ts.map

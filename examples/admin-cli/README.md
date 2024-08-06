@@ -7,7 +7,7 @@ This is a CLI-based example of using i18next & i18next-node-firestore-backend to
 - A Google Firebase project with Firestore enabled.  This app will work with a "Spark Plan" (free) project.
   > Note: The database must not be password protected. If you require authentication, you will need to modify app.js accordingly.
 
-## Using the example
+## Using the example with published NPM package
 
 Following the information for [initializing the Admin SDK in non-Google environments](https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments):
 1. In the `Firebase Console` >> `Project Overview` >> `Project Settings` >> `Service Accounts`.
@@ -17,6 +17,14 @@ Following the information for [initializing the Admin SDK in non-Google environm
 1. Review or edit the values in `.env`, especially the GOOGLE_APPLICATION_CREDENTIALS value.
 1. To install required modules, run: `npm install`
 1. To execute the example app, from the example's directory run: `npm run example`
+
+## Using the example with local NPM code
+
+1. Run `npm uninstall i18next-node-firestore-backend` to remove the published NPM package.
+1. Run `npm install i18next-node-firestore-backend@file:///../../dist` to install the local NPM package.
+1. To execute the example app, from the example's directory run: `npm run example`
+
+NOTE: remember to revert the changes to `examples/admin-cli/package.json` before committing.
 
 ## Outline of the example
 
