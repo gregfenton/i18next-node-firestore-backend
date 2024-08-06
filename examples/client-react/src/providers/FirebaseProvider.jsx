@@ -6,77 +6,97 @@ import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 
 export const FirebaseContext = createContext({});
 
-const firebaseConfig = {
-  // YOUR FIREBASE APP CONFIG
-  //
-  // Get this values from:
-  //   Log into Firebase Console (https://console.firebase.google.com/)
-  //      >> YOUR_PROJECT
-  //      >> Project Settings
-  //      >> Choose an existing app or add new one (Add App >> Web app)
-  //      >> Firebase SDK snippet
-  //      >> Config
-  apiKey: 'A_______________________',
-  authDomain: 'YOUR_FIREBASE_PROJECT_NAME.firebaseapp.com',
-  databaseURL: 'https://YOUR_FIREBASE_PROJECT_NAME.firebaseio.com',
-  projectId: 'YOUR_FIRESBASE_PROJECT_NAME',
-  storageBucket: 'YOUR_FIRESBASE_PROJECT_NAME.appspot.com',
-  appId: '1:_______________________:0',
-};
-
 const FirebaseProvider = (props) => {
   const { children } = props;
 
   const [firebaseInitializing, setFirebaseInitializing] = useState(true);
   const [usingEmulators, setUsingEmulators] = useState(false);
   const [emulatorsConfig, setEmulatorsConfig] = useState(false);
+  const [configError, setConfigError] = useState();
 
-  const myApp = initializeApp(firebaseConfig);
-  const myAuth = getAuth(myApp);
-  const myFS = getFirestore(myApp);
+  const [myApp, setMyApp] = useState();
+  const [myAuth, setMyAuth] = useState();
+  const [myFS, setMyFS] = useState();
+  const [configLoaded, setConfigLoaded] = useState(false);
 
   useEffect(() => {
-    const shouldUseEmulator = false; // or true :)
+    const importJsonConfig = async () => {
+      const myFirebaseConfig = await import('./firebaseConfig.json');
 
-    if (shouldUseEmulator) {
-      let mapEmulators = {};
-
-      let FS_HOST = 'localhost';
-      let FS_PORT = 5002;
-
-      if (FS_HOST && FS_PORT) {
-        connectFirestoreEmulator(myFS, FS_HOST, FS_PORT);
-        console.log(`firestore().useEmulator(${FS_HOST}, ${FS_PORT})`);
-        mapEmulators.FS_HOST = FS_HOST;
-        mapEmulators.FS_PORT = FS_PORT;
+      if (
+        !myFirebaseConfig?.projectId ||
+        myFirebaseConfig.projectId.includes('>> YOUR_PROJECT')
+      ) {
+        const msg =
+          'Invalid Firebase configuration in src/providers/firebaseConfig.json';
+        console.error(msg);
+        setConfigError(msg);
       }
 
-      let AUTH_HOST = 'localhost';
-      let AUTH_PORT = 9099; // or whatever you set the port to in firebase.json
-      if (AUTH_HOST && AUTH_PORT) {
-        let AUTH_URL = `http://${AUTH_HOST}:${AUTH_PORT}`;
+      let theApp = initializeApp(myFirebaseConfig);
+      let theAuth = getAuth(theApp);
+      let theFS = getFirestore(theApp);
+
+      setMyApp(theApp);
+      setMyAuth(theAuth);
+      setMyFS(theFS);
+
+      console.log('FIREBASE STARTUP: Firebase app initialized:', theApp);
+
+      setConfigLoaded(true);
+    };
+
+    importJsonConfig();
+  }, []);
+
+  useEffect(() => {
+    const configureEmulatorIfNeeded = () => {
+      const shouldUseEmulator = false; // or true :)
+
+      if (shouldUseEmulator) {
+        let mapEmulators = {};
+
+        let FS_HOST = 'localhost';
+        let FS_PORT = 5002;
+
+        if (FS_HOST && FS_PORT) {
+          connectFirestoreEmulator(myFS, FS_HOST, FS_PORT);
+          console.log(`firestore().useEmulator(${FS_HOST}, ${FS_PORT})`);
+          mapEmulators.FS_HOST = FS_HOST;
+          mapEmulators.FS_PORT = FS_PORT;
+        }
+
+        let AUTH_HOST = 'localhost';
+        let AUTH_PORT = 9099; // or whatever you set the port to in firebase.json
+        if (AUTH_HOST && AUTH_PORT) {
+          let AUTH_URL = `http://${AUTH_HOST}:${AUTH_PORT}`;
+          console.log(
+            `connectAuthEmulator(${AUTH_URL}, {disableWarnings: true})`
+          );
+          //    warns you not to use any real credentials -- we don't need that noise :)
+          connectAuthEmulator(myAuth, AUTH_URL, { disableWarnings: true });
+
+          mapEmulators.AUTH_HOST = AUTH_HOST;
+          mapEmulators.AUTH_PORT = AUTH_PORT;
+          mapEmulators.AUTH_URL = AUTH_URL;
+        }
+
+        setUsingEmulators(true);
+        setEmulatorsConfig(mapEmulators);
+
         console.log(
-          `connectAuthEmulator(${AUTH_URL}, {disableWarnings: true})`
+          'FIREBASE STARTUP: using Firebase emulator:',
+          JSON.stringify(mapEmulators, null, 2)
         );
-        //    warns you not to use any real credentials -- we don't need that noise :)
-        connectAuthEmulator(myAuth, AUTH_URL, { disableWarnings: true });
-
-        mapEmulators.AUTH_HOST = AUTH_HOST;
-        mapEmulators.AUTH_PORT = AUTH_PORT;
-        mapEmulators.AUTH_URL = AUTH_URL;
       }
 
-      setUsingEmulators(true);
-      setEmulatorsConfig(mapEmulators);
+      setFirebaseInitializing(false);
+    };
 
-      console.log(
-        'FIREBASE STARTUP: using Firebase emulator:',
-        JSON.stringify(mapEmulators, null, 2)
-      );
+    if (configLoaded) {
+      configureEmulatorIfNeeded();
     }
-
-    setFirebaseInitializing(false);
-  }, [myAuth, myFS]);
+  }, [configLoaded, myAuth, myFS]);
 
   if (firebaseInitializing) {
     return <h1>Loading</h1>;
@@ -89,6 +109,10 @@ const FirebaseProvider = (props) => {
     myFS,
     usingEmulators,
   };
+
+  if (configError) {
+    return <h1>{configError}</h1>;
+  }
 
   return (
     <FirebaseContext.Provider value={theValues}>

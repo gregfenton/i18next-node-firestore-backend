@@ -33,6 +33,8 @@ const AuthProvider = (props) => {
         console.log('onAuthStateChanged(): got user', user);
         if (user) {
           setUser(user);
+        } else {
+          setProfileLoading(false);
         }
 
         setAuthLoading(false);
@@ -156,7 +158,10 @@ const AuthProvider = (props) => {
       if (user) {
         console.log(`Logged in as uid(${user.uid}) email(${user.email})`);
       }
+
       setUser(user);
+      setProfileLoading(true);
+
       return true;
     } catch (ex) {
       let msg = `Login failure for email(${email}: ${ex.message})`;

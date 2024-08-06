@@ -9,9 +9,10 @@ This is a ReactJS/Vite example of using i18next & i18next-node-firestore-backend
 
 ## Using the example
 
-1. Edit the FIREBASE values in `src/providers/FirebaseProvider.jsx`. Get the values of your Firebase Project from: `Firebase Console` >> `Project Overview` >> `Project Settings` >> `Your apps` >> (`Web App` or click `Add app` >> `Web app`). In `FirebaseProvider.jsx` set the values of `firebaseConfig`
-1. To install required modules, run: `npm install`
-1. To execute the example app, from the example's directory run: `npm run dev`
+1. Create or edit the file `src/providers/firebaseConfig.json`
+2. Get the values of your Firebase Project from: `Firebase Console` >> `Project Overview` >> `Project Settings` >> `Your apps` >> (`Web App` or click `Add app` >> `Web app`). In `firebaseConfig.json` put the values of `firebaseConfig`.  Ensure the contents of the file is valid JSON format.
+3. Install required modules, run: `npm install`
+4. Execute the example app, from the example's directory run: `npm run dev`
 
 ## Outline of the example
 
