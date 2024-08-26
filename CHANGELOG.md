@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.8](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v2.0.7...v2.0.8) (2024-08-26)
+
+
+### Features
+
+* now `export` type I18NFirestoreBackendOpts so that InitOptions<T> can accept the type for its generic to properly define the init options dictionary in a typesafe manner.  Thanks to @Andrew-Tierno for the original PR! ([fac8baa](https://github.com/gregfenton/i18next-node-firestore-backend/commit/fac8baa9fc6510ab2493494b135f097b404e0a2a))
+
 ### [2.0.7](https://github.com/gregfenton/i18next-node-firestore-backend/compare/v2.0.6...v2.0.7) (2024-08-06)
 
 
