@@ -27,7 +27,7 @@ type I18NFirestoreBackendModuleOpts = {
      */
     functions?: I18NFirestoreBackendModuleFuncs;
 };
-type I18NFirestoreBackendOpts = {
+export type I18NFirestoreBackendOpts = {
     /**
      * Firestore instance, already initialized and connected
      */
