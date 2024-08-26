@@ -41,7 +41,7 @@ type I18NFirestoreBackendModuleOpts = {
   functions?: I18NFirestoreBackendModuleFuncs;
 };
 
-type I18NFirestoreBackendOpts = {
+export type I18NFirestoreBackendOpts = {
   /**
    * Firestore instance, already initialized and connected
    */
@@ -95,8 +95,7 @@ type I18NFirestoreOpts = {
  * Backend class defined to support storing and retrieving i18next translations from Firestore
  */
 export class I18NextFirestoreBackend
-  implements BackendModule<I18NFirestoreBackendOpts>
-{
+  implements BackendModule<I18NFirestoreBackendOpts> {
   static type: 'backend';
 
   /**
