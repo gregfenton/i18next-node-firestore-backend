@@ -25,6 +25,7 @@ This project began as a copy of `i18next-node-mongodb-backend` (https://github.c
 Following the instructions from [this page](https://cloudfour.com/thinks/how-to-publish-an-updated-version-of-an-npm-package/), we did:
 1. make sure local repo is clean:  `git status`
 1. do a build: `npm run build`
+1. add files and commit build output: `git commit -am "dist files updated by build"`
 1. update the version in the packages & CHANGELOG.md: `npm run release-bump:patch` (or 'minor' or 'major')
 1. push to your remote: `git push`
 1. push tags too: `npm run release:tag-push`
